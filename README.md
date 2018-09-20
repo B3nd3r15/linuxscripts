@@ -4,6 +4,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/B3nd3r15/linuxscripts.svg?style=plastic)](https://github.com/B3nd3r15/linuxscripts/network)
 [![GitHub stars](https://img.shields.io/github/stars/B3nd3r15/linuxscripts.svg?style=plastic)](https://github.com/B3nd3r15/linuxscripts/stargazers)
 [![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://github.com/B3nd3r15/linuxscripts/graphs/commit-activity)
+[![Github all releases](https://img.shields.io/github/downloads/B3nd3r15/linuxscripts/total.svg)](https://github.com/B3nd3r15/linuxscripts/releases)
 
 This repo has a bunch of cool linux scripts I find from all over cyberspace. They all do various things so here I will try to keep a quick summary of what each one does.
 
