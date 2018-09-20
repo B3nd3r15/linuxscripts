@@ -1,4 +1,8 @@
 ##Linux Scripts Repo##
+[![licence badge]][licence]
+[![stars badge]][stars]
+[![forks badge]][forks]
+[![issues badge]][issues]
 
 This repo has a bunch of cool linux scripts I find from all over cyberspace. They all do various things so here I will try to keep a quick summary of what each one does.
 
