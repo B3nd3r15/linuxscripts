@@ -78,27 +78,27 @@ if [[ ! -z $YUM_CMD ]]; then
 		
 		
 		# Update yum
-		echo "Updating Yum"
+		echo -e "\xE2\x9C\x94" Updating Yum
 		yes | sudo yum update -y | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		
 		# Install updates
-		echo "Installing Updates"
+		echo -e "\xE2\x9C\x94" Installing Updates
 		yes | sudo yum upgrade | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		
 		# Clean up unused pacakages
-		echo "Cleaning Up Yum Packages"
+		echo -e "\xE2\x9C\x94" Cleaning Up Yum Packages
 		yes | sudo yum clean packages | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		
 		# Clean up Yum Metadata
-		echo "Cleaning Up Yum Metadata"
+		echo -e "\xE2\x9C\x94" Cleaning Up Yum Metadata
 		yes | sudo yum clean metadata | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		
 		# Clean Yum DB Cache
-		echo "Cleaning Up Yum DBCache"
+		echo -e "\xE2\x9C\x94" Cleaning Up Yum DBCache
 		yes | sudo yum clean dbcache | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		
 		# Clean anything leftover
-		echo "Cleaning up Yum Everything"
+		echo -e "\xE2\x9C\x94" Cleaning up Yum Everything
 		yes | sudo yum clean all | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		yes | sudo rm -rf /var/cache/yum | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		
