@@ -294,11 +294,6 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 			sleep 5
 		fi
 		
-		# Sleep 5 seconds to give the service time to start and talk to the servers
-		#echo ""
-		#echo -e "\xE2\x9C\x94" Waiting for NTP service to start | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-		#sleep 5
-
 		# Show NTP servers
 		echo "" 
 		echo -e "\xE2\x9C\x94" Showing current NTP Servers | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
