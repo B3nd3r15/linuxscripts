@@ -118,7 +118,7 @@ if [[ ! -z $YUM_CMD ]]; then
     	# is modified if not it will install it and update the config file 
     	if yum list installed | grep ntp.x86_64 > /dev/null 2>&1 | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"; then
     		echo ""
-    		echo "NTP Successfully Installed"
+    		echo "NTP Successfully Installed" | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		else
 			echo ""
     		echo " Installing NTP "
