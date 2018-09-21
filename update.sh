@@ -254,7 +254,6 @@ elif [[ ! -z $APT_GET_CMD ]]; then
     		echo -e "\xE2\x9C\x94" NTP Successfully Installed | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		else
 			echo ""
-    		echo -e "\xE2\x9C\x94" Installing NTP
     		yes | sudo apt-get install ntp | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		fi  
 
@@ -283,6 +282,7 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 			# Restart the service.
 			echo "" 
 			echo -e "\xE2\x9C\x94" Restarting NTP Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+			echo ""
 			sudo systemctl stop ntp
 			sudo systemctl start ntp
 			sudo systemctl enable ntp
