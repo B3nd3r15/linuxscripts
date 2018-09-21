@@ -118,10 +118,10 @@ if [[ ! -z $YUM_CMD ]]; then
     	# is modified if not it will install it and update the config file 
     	if yum list installed | grep ntp.x86_64 > /dev/null 2>&1 | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"; then
     		echo ""
-    		echo "NTP Successfully Installed" | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+    		echo -e "\xE2\x9C\x94" NTP Successfully Installed | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		else
 			echo ""
-    		echo " Installing NTP "
+    		echo -e "\xE2\x9C\x94" Installing NTP
     		yes | sudo yum install ntp | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		fi  
 
@@ -129,10 +129,10 @@ if [[ ! -z $YUM_CMD ]]; then
 
 		if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
  			echo ""
- 			echo "NTP conf file already updated." | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+ 			echo -e "\xE2\x9C\x94" NTP conf file already updated. | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		else
 			echo ""
-			echo "Updating NTP conf file" | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+			echo -e "\xE2\x9C\x94" Updating NTP conf file | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 	
 		# The config files for ntp lies in /etc/ntp.conf
 		# We are changing the Servers time to google's public NTP servers
@@ -162,7 +162,7 @@ if [[ ! -z $YUM_CMD ]]; then
 		# Give ntp service time to start up and talk to time*.google.com
 		sleep 5
 		echo ""
-		echo "Waiting for NTP service to start" | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		echo -e "\xE2\x9C\x94" Waiting for NTP service to start | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 
 		# Show NTP servers
 		echo "" 
