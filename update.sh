@@ -251,7 +251,7 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 		# We are changing the Servers time to google's public NTP servers
 		# Look here for more info : https://developers.google.com/time/guides#linux_ntpd
 			echo "" 
-			echo -e "\xE2\x9C\x94" Modifying /etc/ntp.conf file | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+			echo -e "\xE2\x9C\x94" Modifying NTP config file | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 	
 		# Comment out the default pool servers.
 			sed -i 's/pool/#&/' /etc/ntp.conf
