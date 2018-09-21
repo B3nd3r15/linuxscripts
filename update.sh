@@ -234,7 +234,7 @@ elif [[ ! -z $APT_GET_CMD ]]; then
     	# if not it will install it. 
     	if apt-get -qq install ntp; then 
     		echo ""
-    		echo -e "\xE2\x9C\x94" NTP Successfully Installed
+    		echo -e "\xE2\x9C\x94" NTP Successfully Installed | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		else
 			echo ""
     		echo -e "\xE2\x9C\x94" Installing NTP
@@ -244,14 +244,14 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 		# Checks to see if the config files need updated
 		if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
  			echo ""
- 			echo -e "\xE2\x9C\x94" NTP config file already updated.
+ 			echo -e "\xE2\x9C\x94" NTP config file already updated. | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		else
 
 		# The config files for ntp lies in /etc/ntp.conf
 		# We are changing the Servers time to google's public NTP servers
 		# Look here for more info : https://developers.google.com/time/guides#linux_ntpd
 			echo "" 
-			echo -e "\xE2\x9C\x94" Modifying /etc/ntp.conf file
+			echo -e "\xE2\x9C\x94" Modifying /etc/ntp.conf file | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 	
 		# Comment out the default pool servers.
 			sed -i 's/pool/#&/' /etc/ntp.conf
@@ -265,7 +265,7 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 			
 			# Restart the service.
 			echo "" 
-			echo -e "\xE2\x9C\x94" Restarting NTP Service
+			echo -e "\xE2\x9C\x94" Restarting NTP Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 			sudo systemctl stop ntp
 			sudo systemctl start ntp
 			sudo systemctl enable ntp
@@ -274,14 +274,14 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 		
 		# Sleep 5 seconds to give the service time to start and talk to the servers
 		echo ""
-		echo -e "\xE2\x9C\x94" Waiting for NTP service to start
+		echo -e "\xE2\x9C\x94" Waiting for NTP service to start | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		sleep 5
 
 		# Show NTP servers
 		echo "" 
-		echo -e "\xE2\x9C\x94" Showing current NTP Servers
+		echo -e "\xE2\x9C\x94" Showing current NTP Servers | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		echo ""
-		ntpq -p | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		ntpq -p 
 		echo ""
 
 		echo ""
