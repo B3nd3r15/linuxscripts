@@ -108,39 +108,61 @@ if [[ ! -z $YUM_CMD ]]; then
 		echo "################################################################################" 
 		echo "" 
 
-		 	    echo ""
+		echo ""
  	    echo "################################################################################"
  	    echo "# Configuring NTP on $(timestamp) #"
  	    echo "################################################################################"
  	    echo ""
 
-    	# Install NTP Service to be configured later.
-	    echo ""
- 	    echo -e "\xE2\x9C\x94" Installing NTP Service
- 	    yes | sudo yum install ntp | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
- 	    echo ""
+    	# Checks to see if NTP is installed. If it is, continues to check if the config file
+    	# is modified if not it will install it and update the config file 
+    	if yum list installed | grep ntp.x86_64 > /dev/null 2>&1 | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"; then
+    		echo ""
+    		echo "NTP Successfully Installed"
+		else
+			echo ""
+    		echo " Installing NTP "
+    		yes | sudo yum install ntp | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		fi  
 
- 	    # The config files for ntp lies in /etc/ntp.conf.
-		# We are changing the Servers time to google's public NTP servers.
+		# Checks to see if the config files need updated
+
+		if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
+ 			echo ""
+ 			echo "ntp.conf file already updated."
+		else
+			echo ""
+			echo "Updating ntp.conf file"
+	
+		# The config files for ntp lies in /etc/ntp.conf
+		# We are changing the Servers time to google's public NTP servers
 		# Look here for more info : https://developers.google.com/time/guides#linux_ntpd
-		echo "" 
-		echo -e "\xE2\x9C\x94" Modifying /etc/ntp.conf file
-		sed -i '/# Specify one or more NTP servers./a server time1.google.com iburst' /etc/ntp.conf
-		sed -i '/server time1.google.com iburst/a server time2.google.com iburst' /etc/ntp.conf
-		sed -i '/server time2.google.com iburst/a server time3.google.com iburst' /etc/ntp.conf
-		sed -i '/server time3.google.com iburst/a server time4.google.com iburst' /etc/ntp.conf
+			echo "" 
+			echo -e "\xE2\x9C\x94" Modifying /etc/ntp.conf file
+	
+			# Comment out the default pool servers.
+			sed -i 's/pool/#&/' /etc/ntp.conf
+			sed -i 's/server/#&/' /etc/ntp.conf
+		
+		# Add the new servers to the end of the file.	
+			sed -i "\$aserver time1.google.com iburst" /etc/ntp.conf
+			sed -i "\$aserver time2.google.com iburst" /etc/ntp.conf
+			sed -i "\$aserver time3.google.com iburst" /etc/ntp.conf
+			sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
+			
+			# Restart, enable, and show the status of the service
+			echo "" 
+			echo -e "\xE2\x9C\x94" Restarting NTP Service
+			sudo systemctl stop ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+			sudo systemctl start ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+			sudo systemctl enable ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+ 			sudo systemctl status ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		fi
 
-		# Comment out the default pool servers.
-		sed -i 's/pool/#&/' /etc/ntp.conf
-
-		# Restart the service.
-		echo "" 
-		echo -e "\xE2\x9C\x94" Restarting NTP Service
-		sudo systemctl stop ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-		sudo systemctl start ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-		sudo systemctl enable ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
- 		sudo systemctl status ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		# Give ntp service time to start up and talk to time*.google.com
 		sleep 5
+		echo ""
+		echo "Waiting for NTP service to start"
 
 		# Show NTP servers
 		echo "" 
@@ -204,30 +226,52 @@ elif [[ ! -z $APT_GET_CMD ]]; then
  	    echo "################################################################################"
  	    echo ""
 
-    	# Install NTP Service to be configured later.
-	    echo ""
- 	    echo -e "\xE2\x9C\x94" Installing NTP Service
- 	    yes | sudo apt-get install ntp | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
- 	    echo ""
 
- 	    # The config files for ntp lies in /etc/ntp.conf.
-		# We are changing the Servers time to google's public NTP servers.
+    	# Checks to see if NTP is installed. If it is, continues to modify config file.
+    	# if not it will install it. 
+    	if apt-get -qq install ntp; then 
+    		echo ""
+    		echo echo -e "\xE2\x9C\x94" NTP Successfully Installed
+		else
+			echo ""
+    		echo -e "\xE2\x9C\x94" Installing NTP
+    		yes | sudo apt-get install ntp | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		fi  
+
+		# Checks to see if the config files need updated
+		if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
+ 			echo ""
+ 			echo -e "\xE2\x9C\x94" NTP config file already updated.
+		else
+
+		# The config files for ntp lies in /etc/ntp.conf
+		# We are changing the Servers time to google's public NTP servers
 		# Look here for more info : https://developers.google.com/time/guides#linux_ntpd
-		echo "" 
-		echo -e "\xE2\x9C\x94" Modifying /etc/ntp.conf file
-		sed -i '/# Specify one or more NTP servers./a server time1.google.com iburst' /etc/ntp.conf
-		sed -i '/server time1.google.com iburst/a server time2.google.com iburst' /etc/ntp.conf
-		sed -i '/server time2.google.com iburst/a server time3.google.com iburst' /etc/ntp.conf
-		sed -i '/server time3.google.com iburst/a server time4.google.com iburst' /etc/ntp.conf
-
+			echo "" 
+			echo -e "\xE2\x9C\x94" Modifying /etc/ntp.conf file
+	
 		# Comment out the default pool servers.
-		sed -i 's/pool/#&/' /etc/ntp.conf
-
-		# Restart the service.
-		echo "" 
-		echo -e "\xE2\x9C\x94" Restarting NTP Service
-		sudo service ntp stop | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-		sudo service ntp start | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+			sed -i 's/pool/#&/' /etc/ntp.conf
+			sed -i 's/server/#&/' /etc/ntp.conf
+		
+		# Add the new servers to the end of the file.	
+			sed -i "\$aserver time1.google.com iburst" /etc/ntp.conf
+			sed -i "\$aserver time2.google.com iburst" /etc/ntp.conf
+			sed -i "\$aserver time3.google.com iburst" /etc/ntp.conf
+			sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
+			
+			# Restart the service.
+			echo "" 
+			echo -e "\xE2\x9C\x94" Restarting NTP Service
+			sudo systemctl stop ntp
+			sudo systemctl start ntp
+			sudo systemctl enable ntp
+ 			sudo systemctl status ntp
+		fi
+		
+		# Sleep 5 seconds to give the service time to start and talk to the servers
+		echo ""
+		echo -e "\xE2\x9C\x94" Waiting for NTP service to start
 		sleep 5
 
 		# Show NTP servers
