@@ -78,30 +78,47 @@ if [[ ! -z $YUM_CMD ]]; then
 		
 		
 		# Update yum
+		echo ""
 		echo -e "\xE2\x9C\x94" Updating Yum
 		yes | sudo yum update -y | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		echo ""
 		
 		# Install updates
+		echo ""
 		echo -e "\xE2\x9C\x94" Installing Updates
 		yes | sudo yum upgrade | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-		
+		echo ""
+
 		# Clean up unused pacakages
+		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum Packages
 		yes | sudo yum clean packages | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-		
+		echo ""
+
 		# Clean up Yum Metadata
+		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum Metadata
 		yes | sudo yum clean metadata | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-		
+		echo ""
+
 		# Clean Yum DB Cache
+		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum DBCache
 		yes | sudo yum clean dbcache | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-		
+		echo ""
+
 		# Clean anything leftover
+		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning up Yum Everything
 		yes | sudo yum clean all | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		echo ""
+
+		# Remove /var/cache/yum file
+		echo ""
+		echo -e "\xE2\x9C\x94" Removing /var/cache/yum
 		yes | sudo rm -rf /var/cache/yum | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-		
+		echo ""
+
 		echo "" 
 		echo "################################################################################" 
 		echo "# End of Upgrade on $(timestamp) #" 
