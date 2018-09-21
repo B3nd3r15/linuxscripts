@@ -80,36 +80,42 @@ if [[ ! -z $YUM_CMD ]]; then
 		# Update yum
 		echo ""
 		echo -e "\xE2\x9C\x94" Updating Yum
+		echo ""
 		yes | sudo yum update -y | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		echo ""
 		
 		# Install updates
 		echo ""
 		echo -e "\xE2\x9C\x94" Installing Updates
+		echo ""
 		yes | sudo yum upgrade | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		echo ""
 
 		# Clean up unused pacakages
 		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum Packages
+		echo ""
 		yes | sudo yum clean packages | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		echo ""
 
 		# Clean up Yum Metadata
 		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum Metadata
+		echo ""
 		yes | sudo yum clean metadata | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		echo ""
 
 		# Clean Yum DB Cache
 		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum DBCache
+		echo ""
 		yes | sudo yum clean dbcache | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		echo ""
 
 		# Clean anything leftover
 		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning up Yum Everything
+		echo ""
 		yes | sudo yum clean all | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		echo ""
 
@@ -210,24 +216,28 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 	    # Update all the repos.
    		echo ""
    		echo -e "\xE2\x9C\x94" Updating Repos 
+   		echo ""
    		yes | sudo apt-get update | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
    		echo ""
 
  	    # Upgrade all the things.
 		echo ""
  		echo -e "\xE2\x9C\x94" Upgrading System 
+ 		echo ""
  		yes | sudo apt-get dist-upgrade | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
    		echo ""
 
 	    # Remove old software.
     	echo ""
  		echo -e "\xE2\x9C\x94" Removing Unused Software
+ 		echo ""
  		yes|sudo apt-get autoremove | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
     	echo ""
 
 	    # Purge config files
     	echo ""
  		echo -e "\xE2\x9C\x94" Purging Leftover Config Files 
+ 		echo ""
  		apt-get purge -y $(dpkg -l | awk '/^rc/ { print $2 }') | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
     	echo ""
 
