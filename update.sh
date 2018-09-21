@@ -129,16 +129,16 @@ if [[ ! -z $YUM_CMD ]]; then
 
 		if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
  			echo ""
- 			echo "ntp.conf file already updated."
+ 			echo "NTP conf file already updated." | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		else
 			echo ""
-			echo "Updating ntp.conf file"
+			echo "Updating NTP conf file" | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 	
 		# The config files for ntp lies in /etc/ntp.conf
 		# We are changing the Servers time to google's public NTP servers
 		# Look here for more info : https://developers.google.com/time/guides#linux_ntpd
 			echo "" 
-			echo -e "\xE2\x9C\x94" Modifying /etc/ntp.conf file
+			echo -e "\xE2\x9C\x94" Modifying NTP config file | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 	
 			# Comment out the default pool servers.
 			sed -i 's/pool/#&/' /etc/ntp.conf
@@ -152,23 +152,23 @@ if [[ ! -z $YUM_CMD ]]; then
 			
 			# Restart, enable, and show the status of the service
 			echo "" 
-			echo -e "\xE2\x9C\x94" Restarting NTP Service
-			sudo systemctl stop ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-			sudo systemctl start ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-			sudo systemctl enable ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
- 			sudo systemctl status ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+			echo -e "\xE2\x9C\x94" Restarting NTP Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+			sudo systemctl stop ntpd
+			sudo systemctl start ntpd
+			sudo systemctl enable ntpd
+ 			sudo systemctl status ntpd
 		fi
 
 		# Give ntp service time to start up and talk to time*.google.com
 		sleep 5
 		echo ""
-		echo "Waiting for NTP service to start"
+		echo "Waiting for NTP service to start" | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 
 		# Show NTP servers
 		echo "" 
-		echo -e "\xE2\x9C\x94" Showing current NTP Servers
+		echo -e "\xE2\x9C\x94" Showing current NTP Servers | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		echo ""
-		ntpq -p | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		ntpq -p
 		echo ""
 
 		echo ""
