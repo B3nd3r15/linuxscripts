@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #----------------------------------
-#			VARIABLES
+#		VARIABLES
 #----------------------------------
 
 # Pulls the script name without directory paths
@@ -26,7 +26,7 @@ timestamp()
 }
 
 #---------------------------------
-#			Run as Root
+#		Run as Root
 #---------------------------------
 
 # if not root, run as root
@@ -37,7 +37,7 @@ fi
 
 
 #---------------------------------
-#			Clear the screen
+#		Clear the screen
 #---------------------------------
 
 # Clear the screen
@@ -45,7 +45,7 @@ clear
 echo ""
 
 #---------------------------------
-#			Set log Location
+#		Set log Location
 #---------------------------------
 
 # Log Location on Server
@@ -57,7 +57,7 @@ echo "Log Location should be: [ $LOG_LOCATION ]"
 echo ""
 
 #--------------------------------------------------
-#			Determine Installed packaging system
+#		Determine Installed packaging system
 #--------------------------------------------------
 
 
@@ -65,7 +65,7 @@ if [[ ! -z $YUM_CMD ]]; then
 
 
 		#---------------------------------
-		#			Update
+		#		Update
 		#---------------------------------
 		
 		# Update all the things!
@@ -180,7 +180,7 @@ if [[ ! -z $YUM_CMD ]]; then
 elif [[ ! -z $APT_GET_CMD ]]; then
 
 		#---------------------------------
-		#			Update
+		#		Update
 		#---------------------------------
 
  	    # Update all the things!
@@ -226,12 +226,15 @@ elif [[ ! -z $APT_GET_CMD ]]; then
  	    echo "################################################################################"
  	    echo ""
 
+ 	    #---------------------------------
+		#	Install and configure NTP
+		#---------------------------------
 
     	# Checks to see if NTP is installed. If it is, continues to modify config file.
     	# if not it will install it. 
     	if apt-get -qq install ntp; then 
     		echo ""
-    		echo echo -e "\xE2\x9C\x94" NTP Successfully Installed
+    		echo -e "\xE2\x9C\x94" NTP Successfully Installed
 		else
 			echo ""
     		echo -e "\xE2\x9C\x94" Installing NTP
