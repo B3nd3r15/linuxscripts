@@ -368,6 +368,32 @@ elif [[ ! -z $APT_GET_CMD ]]; then
  	    echo "################################################################################"
  	    echo ""
 
+ 	    echo ""
+ 	    echo "################################################################################"
+ 	    echo "# Checking for new LTS release on $(timestamp) #"
+ 	    echo "################################################################################"
+ 	    echo ""
+
+    	#---------------------------------
+		# Ask user if they would like to
+		# check for new LTS release
+		#---------------------------------
+		while true; do
+  		 	 read -p "Do you wish to check for new LTS release?" yn
+  		  case $yn in
+       		 [Yy]* ) do-release-update -c;
+     		   [Nn]* ) exit;;
+     	  * ) echo "Please answer yes or no.";;
+  		  esac
+		done
+
+		echo ""
+ 	    echo "################################################################################"
+ 	    echo "# Completed Checking for LTS release on $(timestamp) #"
+ 	    echo "################################################################################"
+ 	    echo ""
+
+
 #---------------------------------
 # If neither Yum or Apt are installed, exit and have user manually install updates on their system.
 #---------------------------------
