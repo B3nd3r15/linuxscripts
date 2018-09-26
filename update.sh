@@ -1,5 +1,23 @@
 #!/bin/bash
 
+###################################################################
+# Script Name: update.sh
+#
+# Description: script to detect which package manger you are using
+# install updates, cleans up old pacakges, installs ntp if needed,
+# configure ntp with google time servers, and check for new LTS 
+# releases if applicable. 
+#
+# Args: N/A
+#
+# Author:B3nd3r15
+# Email:
+#
+# License: GPL-3.0  
+# https://github.com/B3nd3r15/linuxscripts/blob/master/LICENSE
+###################################################################
+
+
 #----------------------------------
 #		VARIABLES
 #----------------------------------
@@ -296,7 +314,6 @@ elif [[ ! -z $APT_GET_CMD ]]; then
     	# Checks to see if NTP is installed. If it is, continues to modify config file.
     	# if not it will install it. 
 		#---------------------------------
-
     	if apt-get -qq install ntp; then 
     		echo ""
     		echo -e "\xE2\x9C\x94" NTP Successfully Installed | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
