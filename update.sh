@@ -381,8 +381,8 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 		while true; do
   		 	 read -p "Do you wish to check for new LTS release?" yn
   		  case $yn in
-       		 [Yy]* ) do-release-update -c;
-     		   [Nn]* ) exit;;
+       		 [Yy]* ) do-release-update -c;;
+     		 [Nn]* ) exit;;
      	  * ) echo "Please answer yes or no.";;
   		  esac
 		done
