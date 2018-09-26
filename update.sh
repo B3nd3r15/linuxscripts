@@ -378,14 +378,33 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 		# Ask user if they would like to
 		# check for new LTS release
 		#---------------------------------
-		while true; do
-  		 	 read -p "Do you wish to check for new LTS release?" yn
-  		  case $yn in
-       		 [Yy]* ) do-release-update -c;;
-     		 [Nn]* ) exit;;
-     	  * ) echo "Please answer yes or no.";;
-  		  esac
-		done
+		
+
+		if do-release-upgrade -c; then 
+    		echo ""
+    		read -p "Would you like to install the new LTS release? " yn
+    		 case $yn in
+       		 [Yy]* ) do-release-upgrade; break;;
+     		 [Nn]* ) break;;
+     	  		 * ) echo "Please answer yes or no.";;
+			esac
+		else
+			echo ""
+    		echo "No action taken."
+		fi
+
+
+
+		#while true; do
+			#do-release-upgrade -c; break ;;
+  		 	 #read -p "Do you wish to check for a new LTS release?" yn
+  		  #case $yn in
+       		 #[Yy]* ) do-release-upgrade; break;;
+     		 #[Nn]* ) break;;
+     	  		 #* ) echo "Please answer yes or no.";;
+		  #case 
+  		  #esac
+		#done
 
 		echo ""
  	    echo "################################################################################"
