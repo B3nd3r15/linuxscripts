@@ -37,7 +37,6 @@ timestamp()
  date +"%Y-%m-%d %T"
 }
 
-
 #---------------------------------
 #	Run as Root
 #---------------------------------
@@ -46,7 +45,6 @@ if (( $EUID != 0 )); then
     sudo /home/$USER/$scriptname
         exit
 fi
-
 
 #---------------------------------
 #	Clear the screen
@@ -205,8 +203,11 @@ if [[ ! -z $YUM_CMD ]]; then
 			echo "" 
 			echo -e "\xE2\x9C\x94" Restarting NTP Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 			sudo systemctl stop ntpd
+			sleep 2
 			sudo systemctl start ntpd
+			sleep 2
 			sudo systemctl enable ntpd
+			sleep 2
  			sudo systemctl status ntpd
 		fi
 
@@ -335,14 +336,17 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 			sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
 			
 		#---------------------------------
-		# Restart the service.
+		# Restart the NTP service.
 		#---------------------------------
 			echo "" 
 			echo -e "\xE2\x9C\x94" Restarting NTP Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 			echo ""
 			sudo systemctl stop ntp
+			sleep 2
 			sudo systemctl start ntp
+			sleep 2
 			sudo systemctl enable ntp
+			sleep 2
  			sudo systemctl status ntp
 
  		#---------------------------------
@@ -378,8 +382,6 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 		# Ask user if they would like to
 		# check for new LTS release
 		#---------------------------------
-		
-
 		if do-release-upgrade -c; then 
     		echo ""
     		read -p "Would you like to install the new LTS release? " yn
@@ -392,19 +394,6 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 			echo ""
     		echo "No action taken."
 		fi
-
-
-
-		#while true; do
-			#do-release-upgrade -c; break ;;
-  		 	 #read -p "Do you wish to check for a new LTS release?" yn
-  		  #case $yn in
-       		 #[Yy]* ) do-release-upgrade; break;;
-     		 #[Nn]* ) break;;
-     	  		 #* ) echo "Please answer yes or no.";;
-		  #case 
-  		  #esac
-		#done
 
 		echo ""
  	    echo "################################################################################"
