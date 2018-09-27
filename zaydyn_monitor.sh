@@ -1,12 +1,22 @@
-                  ####################################################################################################
-                  #                                        Zaydyn_monitor.sh                                         #
-                  # Written for Tecmint.com for the post www.tecmint.com/linux-server-health-monitoring-script/      #
-                  # If any bug, report us in the link below                                                          #
-                  # Free to use/edit/distribute the code below by                                                    #
-                  # giving proper credit to Tecmint.com and Author                                                   #
-                  #                                                                                                  #
-                  ####################################################################################################
-#! /bin/bash
+#!/bin/bash
+
+###################################################################
+# Script Name: zaydyn_monitor.sh
+#
+# Date Created: 2018-09-01
+#
+# Description: This script was used to monitor a server.
+#
+# Args: N/A
+#
+# Author:B3nd3r15
+# Email:
+#
+# License: GPL-3.0  
+# https://github.com/B3nd3r15/linuxscripts/blob/master/LICENSE
+###################################################################
+
+
 # unset any variable which system may be using
 
 # clear the screen

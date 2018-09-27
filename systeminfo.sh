@@ -1,6 +1,21 @@
 #/bin/bash
-# by oToGamez
-# www.pro-toolz.net
+
+###################################################################
+# Script Name: systeminfo.sh
+#
+# Date Created: 2018-09-01
+#
+# Description: script that will show various system information.
+# original file from oToGamez at www.pro-toolz.net
+#
+# Args: N/A
+#
+# Author:B3nd3r15
+# Email:
+#
+# License: GPL-3.0  
+# https://github.com/B3nd3r15/linuxscripts/blob/master/LICENSE
+###################################################################
 
       E='echo -e';e='echo -en';trap "R;exit" 2
     ESC=$( $e "\e")

@@ -1,7 +1,24 @@
 #!/bin/bash
 
-#Install apps - This script will be a growing script as I use it to install apps. 
-#This will be good for setting up new machines with the default apps I use.
+###################################################################
+# Script Name: ubuntusetup.sh
+#
+# Date Created: 2018-09-01
+#
+# Description: This script will be a growing script as I use it to 
+# install apps. This will be good for setting up new machines with
+# the default apps I use. Make sure you run update.sh first to 
+# update the server.
+#
+# Args: N/A
+#
+# Author:B3nd3r15
+# Email:
+#
+# License: GPL-3.0  
+# https://github.com/B3nd3r15/linuxscripts/blob/master/LICENSE
+###################################################################
+
 
 date=$(date)
 

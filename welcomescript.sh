@@ -1,4 +1,20 @@
-# This script will say your name
+#!/bin/bash
+
+###################################################################
+# Script Name: welcomescript.sh
+#
+# Date Created: 2018-09-01
+#
+# Description: simple script i made that will say your name
+#
+# Args: N/A
+#
+# Author:B3nd3r15
+# Email:
+#
+# License: GPL-3.0  
+# https://github.com/B3nd3r15/linuxscripts/blob/master/LICENSE
+###################################################################
 
 #show the current time
 time=$(date +"%T")
@@ -13,11 +29,11 @@ rand=$[ $RANDOM % 3 ]
 #echo ${arr[$rand]}
 
 #check to see if the argument passed equals Blake or blake
-if [ "$1" == "Blake" ] || [ "$1" == "blake" ]
+if [ "$1" == "B3nd3r15" ] || [ "$1" == "b3nd3r15" ]
 then
 echo
 #If it does then say HEY.
-echo "Hey! My name is Blake too!"
+echo "Hey! My name is B3nd3r15 too!"
       else
       echo
       #otherwise ask who am I talking to.

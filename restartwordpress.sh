@@ -1,5 +1,24 @@
 #!/bin/bash
 
+###################################################################
+# Script Name: restartwordpress.sh
+#
+# Date Created: 2018-09-01
+#
+# Description: this script will simply restart wordpress services
+#
+# Args: N/A
+#
+# Author:B3nd3r15
+# Email:
+#
+# License: GPL-3.0  
+# https://github.com/B3nd3r15/linuxscripts/blob/master/LICENSE
+###################################################################
+
+
+
+
 #This will restart wordpress.
 
 #Logfile Location.
