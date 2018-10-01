@@ -246,6 +246,8 @@ if [[ ! -z $YUM_CMD ]]; then
 		echo ""
 		ntpq -p
 		echo ""
+		ntpstat
+		echo ""
 
 		echo ""
  	    echo "################################################################################"
@@ -383,6 +385,8 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 		echo -e "\xE2\x9C\x94" Showing current NTP Servers | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		echo ""
 		ntpq -p 
+		echo ""
+		ntpstat
 		echo ""
 
 		echo ""
