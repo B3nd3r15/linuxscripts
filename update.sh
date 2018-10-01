@@ -323,7 +323,7 @@ elif [[ ! -z $APT_GET_CMD ]]; then
     		read -p "Would you like to install the new LTS release? " yn
     		 case $yn in
        		 [Yy]* ) do-release-upgrade; break;;
-     		 [Nn]* ) break;;
+     		 [Nn]* ) ;;
      	  		 * ) echo "Please answer yes or no.";;
 			esac
 		else
