@@ -255,6 +255,7 @@ elif [[ ! -z $APT_GET_CMD ]]; then
  	    echo "# Completed Checking for LTS release on $(timestamp) #"
  	    echo "################################################################################"
  	    echo ""
+
 #---------------------------------
 # If neither Yum or Apt are installed, exit and have user manually install updates on their system.
 #---------------------------------
