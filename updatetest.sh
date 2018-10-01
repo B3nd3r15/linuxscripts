@@ -41,9 +41,9 @@ function get_remote_file() {
     fi
   fi
 }
-function clean_up() {
+#function clean_up() {
   # clean up code (if required) that has to execute every time here
-}
+#}
 function self_clean_up() {
   rm -f "${EXECUTABLE_SHELL_SCRIPT}"
 }
