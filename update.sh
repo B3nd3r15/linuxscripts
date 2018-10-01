@@ -333,15 +333,43 @@ fi
 # Restart the NTP service.
 #---------------------------------
 echo "" 
-if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 )); then
-	echo -e "\xE2\x9C\x94" $service service is running | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-	sudo systemctl status ntp
-else
-	echo -e "\xE2\x9C\x94" Restarting $service Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-	/etc/init.d/$service start
-	sleep 5
-	sudo systemctl status ntp
-fi
+#if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 )); then
+	#echo -e "\xE2\x9C\x94" $service service is running | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+	#sudo systemctl status ntp
+#else
+	#echo -e "\xE2\x9C\x94" Restarting $service Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+	#/etc/init.d/$service start
+	#sleep 5
+	#sudo systemctl status ntp
+#fi
+
+###############################
+if [[ ! -z $YUM_CMD ]]; then
+		
+	if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 )); then
+		echo -e "\xE2\x9C\x94" $service service is running | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		sudo systemctl status ntpd
+	else
+		echo -e "\xE2\x9C\x94" Restarting $service Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		/etc/init.d/$service start
+		sleep 5
+		sudo systemctl status ntpd
+	fi
+		
+elif [[ ! -z $APT_GET_CMD ]]; then
+		
+	echo "" 
+	if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 )); then
+		echo -e "\xE2\x9C\x94" $service service is running | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		sudo systemctl status ntp
+	else
+		echo -e "\xE2\x9C\x94" Restarting $service Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+		/etc/init.d/$service start
+		sleep 5
+		sudo systemctl status ntp
+	fi
+fi 
+######################################
 		
 #---------------------------------
 # Show NTP servers
