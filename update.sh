@@ -308,6 +308,35 @@ elif [[ ! -z $APT_GET_CMD ]]; then
     	echo "################################################################################"
     	echo "" 
 
+    	echo ""
+ 	    echo "################################################################################"
+ 	    echo "# Checking for new LTS release on $(timestamp) #"
+ 	    echo "################################################################################"
+ 	    echo ""
+
+    	#---------------------------------
+		# Ask user if they would like to
+		# check for new LTS release
+		#---------------------------------
+		if do-release-upgrade -c; then 
+    		echo ""
+    		read -p "Would you like to install the new LTS release? " yn
+    		 case $yn in
+       		 [Yy]* ) do-release-upgrade; break;;
+     		 [Nn]* ) break;;
+     	  		 * ) echo "Please answer yes or no.";;
+			esac
+		else
+			echo ""
+    		echo "No action taken."
+		fi
+
+		echo ""
+ 	    echo "################################################################################"
+ 	    echo "# Completed Checking for LTS release on $(timestamp) #"
+ 	    echo "################################################################################"
+ 	    echo ""
+
  	    echo ""
  	    echo "################################################################################"
  	    echo "# Configuring NTP on $(timestamp) #"
@@ -392,35 +421,6 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 		echo ""
  	    echo "################################################################################"
  	    echo "# Completed NTP Configuration on $(timestamp) #"
- 	    echo "################################################################################"
- 	    echo ""
-
- 	    echo ""
- 	    echo "################################################################################"
- 	    echo "# Checking for new LTS release on $(timestamp) #"
- 	    echo "################################################################################"
- 	    echo ""
-
-    	#---------------------------------
-		# Ask user if they would like to
-		# check for new LTS release
-		#---------------------------------
-		if do-release-upgrade -c; then 
-    		echo ""
-    		read -p "Would you like to install the new LTS release? " yn
-    		 case $yn in
-       		 [Yy]* ) do-release-upgrade; break;;
-     		 [Nn]* ) break;;
-     	  		 * ) echo "Please answer yes or no.";;
-			esac
-		else
-			echo ""
-    		echo "No action taken."
-		fi
-
-		echo ""
- 	    echo "################################################################################"
- 	    echo "# Completed Checking for LTS release on $(timestamp) #"
  	    echo "################################################################################"
  	    echo ""
 
