@@ -21,7 +21,7 @@
  
 SCRIPT_NAME="$0"
 ARGS="$@"
-NEW_FILE="https://raw.githubusercontent.com/B3nd3r15/linuxscripts/master/update.sh"
+NEW_FILE="https://raw.githubusercontent.com/B3nd3r15/linuxscripts/master/selfupdate.sh"
 VERSION="1.1"
  
 check_upgrade () {
