@@ -222,12 +222,22 @@ if [[ ! -z $YUM_CMD ]]; then
 			#-------------------------------------------------
 			echo "" 
 			echo -e "\xE2\x9C\x94" Restarting NTP Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-			sudo systemctl stop ntpd
-			sleep 2
-			sudo systemctl start ntpd
-			sleep 2
-			sudo systemctl enable ntpd
-			sleep 2
+			service=ntpd
+
+			if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 ))
+			then
+			echo "$service is running!!!"
+			else
+			echo "Restarting $service"
+			/etc/init.d/$service start
+			fi
+
+			#sudo systemctl stop ntpd
+			#sleep 2
+			#sudo systemctl start ntpd
+			#sleep 2
+			#sudo systemctl enable ntpd
+			#sleep 2
  			sudo systemctl status ntpd
 		fi
 
