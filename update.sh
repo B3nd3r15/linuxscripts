@@ -348,7 +348,8 @@ if [[ ! -z $YUM_CMD ]]; then
 		
 	if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 )); then
 		echo -e "\xE2\x9C\x94" $service service is running | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-		sudo systemctl status ntpd
+		echo ""
+		sudo systemctl status $service
 	else
 		echo -e "\xE2\x9C\x94" Restarting $service Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		/etc/init.d/$service start
@@ -358,10 +359,10 @@ if [[ ! -z $YUM_CMD ]]; then
 		
 elif [[ ! -z $APT_GET_CMD ]]; then
 		
-	echo "" 
 	if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 )); then
 		echo -e "\xE2\x9C\x94" $service service is running | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-		sudo systemctl status ntp
+		echo ""
+		sudo systemctl status $service
 	else
 		echo -e "\xE2\x9C\x94" Restarting $service Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		/etc/init.d/$service start
