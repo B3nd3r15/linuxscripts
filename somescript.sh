@@ -462,6 +462,8 @@ elif [[ -n $APT_GET_CMD ]]; then
       echo "################################################################################"
       echo ""
 
+      echo "HEY IT UPDATED!!"
+
 #---------------------------------
 # If neither Yum or Apt are installed, exit and have user manually install updates on their system.
 #---------------------------------
