@@ -22,9 +22,7 @@ function get_remote_file() {
     fi
   fi
 }
-function clean_up() {
-  # clean up code (if required) that has to execute every time here
-}
+
 function self_clean_up() {
   rm -f "${EXECUTABLE_SHELL_SCRIPT}"
 }
@@ -475,10 +473,10 @@ fi
 
 if [[ $MY_NAME = \.* ]]; then
   # invoke real main program
-  trap "clean_up; self_clean_up" EXIT
+  trap "self_clean_up" EXIT
   main "$@"
 else
   # update myself and invoke updated version
-  trap clean_up EXIT
+  trap EXIT
   update_self_and_invoke "$@"
 fi
