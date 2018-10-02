@@ -29,12 +29,7 @@
 #---------------------------------
 # Pulls the script name without directory paths
 #---------------------------------
-scriptname=`echo $(basename ${0})`
-
-#---------------------------------
-# Sets the current date/time
-#---------------------------------
-date=`date +"%Y%m%d_%H%M%S"`
+scriptname="$(basename "${0}")"
 
 #---------------------------------
 # Gets OS Version
@@ -44,7 +39,7 @@ osver=$(lsb_release -ds 2>/dev/null || cat /etc/*release 2>/dev/null | head -n1 
 #---------------------------------
 # Gets Yum version
 #---------------------------------
-YUM_CMD=$(which yum)
+YUM_CMD=$(command -v yum)
 
 #---------------------------------
 # Gets Apt version
@@ -63,8 +58,8 @@ timestamp()
 #	Run as Root
 #---------------------------------
 
-if (( $EUID != 0 )); then
-    sudo /home/$USER/$scriptname
+if (( EUID != 0 )); then
+    sudo /home/"$USER"/"$scriptname"
         exit
 fi
 
@@ -78,7 +73,7 @@ echo ""
 #	Set log Location
 #---------------------------------
 LOG_LOCATION=/var/log
-exec > >(tee -ai $LOG_LOCATION/${scriptname}.log )
+exec > >(tee -ai $LOG_LOCATION/"${scriptname}".log )
 exec 2>&1
 echo ""
 echo "Log Location should be: [ $LOG_LOCATION ]"
@@ -87,7 +82,7 @@ echo ""
 #--------------------------------------------------
 #	Determine Installed packaging system
 #--------------------------------------------------
-if [[ ! -z $YUM_CMD ]]; then
+if [[ -n $YUM_CMD ]]; then
 
 
 		#---------------------------------
@@ -257,7 +252,7 @@ if [[ ! -z $YUM_CMD ]]; then
  	    echo "################################################################################"
  	    echo ""
 
-elif [[ ! -z $APT_GET_CMD ]]; then
+elif [[ -n $APT_GET_CMD ]]; then
 
 		#---------------------------------
  	    # Update all the things!
@@ -306,7 +301,7 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 
     	echo ""
     	echo "################################################################################"
-    	echo "# End of Upgrade on $(timestamp) #"
+    	echo "# End of Upgrade on "$(timestamp)" #"
     	echo "################################################################################"
     	echo "" 
 
@@ -322,9 +317,9 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 		#---------------------------------
 		if do-release-upgrade -c; then 
     		echo ""
-    		read -p "Would you like to install the new LTS release? " yn
+    		read -pr "Would you like to install the new LTS release? " yn
     		 case $yn in
-       		 [Yy]* ) do-release-upgrade; break;;
+       		 [Yy]* ) do-release-upgrade;;
      		 [Nn]* ) ;;
      	  		 * ) echo "Please answer yes or no.";;
 			esac
