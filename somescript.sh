@@ -4,7 +4,7 @@ set -fb
 
 readonly THISDIR=$(cd "$(dirname "$0")" ; pwd)
 readonly MY_NAME=$(basename "$0")
-readonly FILE_TO_FETCH_URL="https://raw.githubusercontent.com/B3nd3r15/linuxscripts/master/"
+readonly FILE_TO_FETCH_URL="https://raw.githubusercontent.com/B3nd3r15/linuxscripts/Test/"
 readonly EXISTING_SHELL_SCRIPT="${THISDIR}/somescript.sh"
 readonly EXECUTABLE_SHELL_SCRIPT="${THISDIR}/.somescript.sh"
 
