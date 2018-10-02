@@ -483,6 +483,8 @@ elif [[ ! -z $APT_GET_CMD ]]; then
       echo "################################################################################"
       echo ""
 
+      echo "this script has been updated!"
+
 #---------------------------------
 # If neither Yum or Apt are installed, exit and have user manually install updates on their system.
 #---------------------------------
