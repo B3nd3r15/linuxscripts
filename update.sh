@@ -20,6 +20,8 @@
 ###################################################################
 
 
+
+
 #----------------------------------
 #		VARIABLES
 #----------------------------------
@@ -294,7 +296,7 @@ elif [[ -n $APT_GET_CMD ]]; then
     	echo ""
  		echo -e "\xE2\x9C\x94" Purging Leftover Config Files 
  		echo ""
- 		apt-get purge -y $(dpkg -l | awk '/^rc/ { print $2 }') | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+ 		apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
     	echo ""
 
     	echo ""
