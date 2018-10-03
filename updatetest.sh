@@ -5,10 +5,7 @@
 #
 # Date Created: 2018-10-01
 #
-# Description: script to detect which package manger you are using
-# install updates, cleans up old pacakges, installs ntp if needed,
-# configure ntp with google time servers, and check for new LTS 
-# releases if applicable. 
+# Description: Testing self update
 #
 # Args: N/A
 #
