@@ -316,7 +316,7 @@ elif [[ -n $APT_GET_CMD ]]; then
 		#---------------------------------
 		if do-release-upgrade -c; then 
     		echo ""
-    		read -pr "Would you like to install the new LTS release? " yn
+    		read -p "Would you like to install the new LTS release? " yn
     		 case $yn in
        		 [Yy]* ) do-release-upgrade;;
      		 [Nn]* ) ;;
