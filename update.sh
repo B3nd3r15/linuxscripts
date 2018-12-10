@@ -173,15 +173,14 @@ if [[ -n $YUM_CMD ]]; then
 		echo "" 
 
 		if ps ax | grep -v grep | grep $SERVICE > /dev/null; then
-   			 echo "$SERVICE service running, disabling..."
-   			 #Stop the Chronyd Service
-   			 systemctl stop chronyd
-   			 #Disable chronyd so it cannot start if server reboots.
-   			 systemctl disable chronyd
+   			echo "$SERVICE service running, disabling..."
+   			#Stop the Chronyd Service
+   			systemctl stop chronyd
+   			#Disable chronyd so it cannot start if server reboots.
+   			systemctl disable chronyd
 		else
-   		 echo "$SERVICE is not running or has been disabled."
-   		 
-fi
+   			echo "$SERVICE is not running or has been disabled."
+   		fi
 
 		echo "" 
 		echo "################################################################################" 
