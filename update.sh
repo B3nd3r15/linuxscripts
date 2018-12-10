@@ -161,6 +161,24 @@ if [[ -n $YUM_CMD ]]; then
 		echo "################################################################################" 
 		echo "" 
 
+		echo "" 
+		echo "################################################################################" 
+		echo "# Start disable of Chronyd Service on $(timestamp) #" 
+		echo "################################################################################" 
+		echo "" 
+
+		#Stop the Chronyd Service
+		systemctl stop chronyd
+
+		#Disable chronyd so it cannot start if server reboots.
+		systemctl disable chronyd
+
+		echo "" 
+		echo "################################################################################" 
+		echo "# End of disabling Chronyd Service on $(timestamp) #" 
+		echo "################################################################################" 
+		echo "" 
+
 		echo ""
  	    echo "################################################################################"
  	    echo "# Configuring NTP on $(timestamp) #"
@@ -177,7 +195,7 @@ if [[ -n $YUM_CMD ]]; then
 		else
 			echo ""
     		echo -e "\xE2\x9C\x94" Installing NTP
-    		yes | sudo yum install ntp | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
+    		yes | sudo yum install ntp ntpd | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 		fi  
 
 		#-------------------------------------------------
@@ -191,7 +209,7 @@ if [[ -n $YUM_CMD ]]; then
 			echo -e "\xE2\x9C\x94" Updating NTP conf file | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
 	
 
-		#-----------------------------------------------------------------------------------
+		#-----------------------------------------------\------------------------------------
 		# The config files for ntp lies in /etc/ntp.conf
 		# We are changing the Servers time to google's public NTP servers
 		# Look here for more info : https://developers.google.com/time/guides#linux_ntpd
