@@ -63,6 +63,11 @@ if (( EUID != 0 )); then
 fi
 
 #---------------------------------
+#	chronyd service
+#---------------------------------
+SERVICE=chronyd;
+
+#---------------------------------
 #	Clear the screen
 #---------------------------------
 clear 
@@ -163,19 +168,24 @@ if [[ -n $YUM_CMD ]]; then
 
 		echo "" 
 		echo "################################################################################" 
-		echo "# Start disable of Chronyd Service on $(timestamp) #" 
+		echo "# Start disable of Chronyd Service on $(timestamp) #"
 		echo "################################################################################" 
 		echo "" 
 
-		#Stop the Chronyd Service
-		systemctl stop chronyd
-
-		#Disable chronyd so it cannot start if server reboots.
-		systemctl disable chronyd
+		if ps ax | grep -v grep | grep $SERVICE > /dev/null; then
+   			 echo "$SERVICE service running, disabling..."
+   			 #Stop the Chronyd Service
+   			 systemctl stop chronyd
+   			 #Disable chronyd so it cannot start if server reboots.
+   			 systemctl disable chronyd
+		else
+   		 echo "$SERVICE is not running or has been disabled."
+   		 
+fi
 
 		echo "" 
 		echo "################################################################################" 
-		echo "# End of disabling Chronyd Service on $(timestamp) #" 
+		echo "# End of disabling Chronyd Service on $(timestamp) #"
 		echo "################################################################################" 
 		echo "" 
 
