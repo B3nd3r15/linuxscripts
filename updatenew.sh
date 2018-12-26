@@ -274,25 +274,25 @@ elif [[ -n $APT_GET_CMD ]]; then
   		#---------------------------------
 	    # Update all the repos.
 		#---------------------------------
-   		echo -e "\xE2\x9C\x94" Updating Repos |tee -ai $LOG_LOCATION/"${scriptname}".log
+   		echo -e "\xE2\x9C\x94" Updating Repos
    		yes | sudo apt-get update >> $LOG_LOCATION/"${scriptname}".log
 
    		#---------------------------------
  	    # Upgrade all the things.
 		#---------------------------------
- 		echo -e "\xE2\x9C\x94" Upgrading System |tee -ai $LOG_LOCATION/"${scriptname}".log
+ 		echo -e "\xE2\x9C\x94" Upgrading System
  		yes | sudo apt-get dist-upgrade >> $LOG_LOCATION/"${scriptname}".log
 
    		#---------------------------------
 	    # Remove old software.
 		#---------------------------------
- 		echo -e "\xE2\x9C\x94" Removing Unused Software|tee -ai $LOG_LOCATION/"${scriptname}".log
+ 		echo -e "\xE2\x9C\x94" Removing Unused Software
  		yes|sudo apt-get autoremove >> $LOG_LOCATION/"${scriptname}".log
 
     	#---------------------------------
 	    # Purge config files
 		#---------------------------------
- 		echo -e "\xE2\x9C\x94" Purging Leftover Config Files |tee -ai $LOG_LOCATION/"${scriptname}".log
+ 		echo -e "\xE2\x9C\x94" Purging Leftover Config Files
  		apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" >>$LOG_LOCATION/"${scriptname}".log
 
     	echo ""
@@ -332,7 +332,7 @@ elif [[ -n $APT_GET_CMD ]]; then
     	# if not it will install it. 
 		#---------------------------------
     	if apt-get -qq install ntp ntpstat; then 
-    		echo -e "\xE2\x9C\x94" NTP Successfully Installed |tee -ai $LOG_LOCATION/"${scriptname}".log
+    		echo -e "\xE2\x9C\x94" NTP Successfully Installed
 		else
     		yes | sudo apt-get install ntp ntpstat >> $LOG_LOCATION/"${scriptname}".log
 		fi  
