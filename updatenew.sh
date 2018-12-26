@@ -80,8 +80,6 @@ LOG_LOCATION=/var/log
 exec > >(tee -ai $LOG_LOCATION/"${scriptname}".log )
 exec 2>&1
 echo ""
-echo "Log Location: [ $LOG_LOCATION ]"
-echo ""
 
 #--------------------------------------------------
 #	Determine Installed packaging system
@@ -101,14 +99,14 @@ if [[ -n $YUM_CMD ]]; then
 		echo ""
 		echo -e "\xE2\x9C\x94" Updating Yum
 		echo ""
-		yes | sudo yum update -y
+		yes | sudo yum update -y >> $LOG_LOCATION/"${scriptname}".log
 		
 		#---------------------------------
 		#	Install Updates
 		#---------------------------------
 		echo -e "\xE2\x9C\x94" Installing Updates
 		echo ""
-		yes | sudo yum upgrade
+		yes | sudo yum upgrade >> $LOG_LOCATION/"${scriptname}".log
 		echo ""
 
 		#---------------------------------
@@ -117,7 +115,7 @@ if [[ -n $YUM_CMD ]]; then
 		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum Packages
 		echo ""
-		yes | sudo yum clean packages
+		yes | sudo yum clean packages >> $LOG_LOCATION/"${scriptname}".log
 		echo ""
 
 		#---------------------------------
@@ -126,7 +124,7 @@ if [[ -n $YUM_CMD ]]; then
 		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum Metadata
 		echo ""
-		yes | sudo yum clean metadata
+		yes | sudo yum clean metadata >> $LOG_LOCATION/"${scriptname}".log
 		echo ""
 
 		#---------------------------------
@@ -135,7 +133,7 @@ if [[ -n $YUM_CMD ]]; then
 		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum DBCache
 		echo ""
-		yes | sudo yum clean dbcache
+		yes | sudo yum clean dbcache >> $LOG_LOCATION/"${scriptname}".log
 		echo ""
 
 		#---------------------------------
@@ -144,7 +142,7 @@ if [[ -n $YUM_CMD ]]; then
 		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning up Yum Everything
 		echo ""
-		yes | sudo yum clean all
+		yes | sudo yum clean all >> $LOG_LOCATION/"${scriptname}".log
 		echo ""
 
 		#---------------------------------
@@ -152,7 +150,7 @@ if [[ -n $YUM_CMD ]]; then
 		#---------------------------------
 		echo ""
 		echo -e "\xE2\x9C\x94" Removing /var/cache/yum
-		yes | sudo rm -rf /var/cache/yum
+		yes | sudo rm -rf /var/cache/yum >> $LOG_LOCATION/"${scriptname}".log
 		echo ""
 
 		echo "" 
@@ -190,7 +188,7 @@ if [[ -n $YUM_CMD ]]; then
 		else
 			echo ""
     		echo -e "\xE2\x9C\x94" Installing NTP
-    		yes | sudo yum install ntp ntpd
+    		yes | sudo yum install ntp ntpd >> $LOG_LOCATION/"${scriptname}".log
 		fi  
 
 		#-------------------------------------------------
@@ -261,6 +259,10 @@ if [[ -n $YUM_CMD ]]; then
 		echo ""
  	    echo "# Completed NTP Configuration on $(timestamp) #"
  	    echo ""
+
+		echo ""
+		echo "To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ]"
+		echo ""
 
 elif [[ -n $APT_GET_CMD ]]; then
 
