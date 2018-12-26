@@ -78,7 +78,9 @@ echo ""
 #---------------------------------
 LOG_LOCATION=/var/log
 exec > >(tee -ai $LOG_LOCATION/"${scriptname}".log )
-exec  > $LOG_LOCATION/"${scriptname}".log 2>&1
+exec 3>&1 4>&2
+trap 'exec 2>&4 1>&3' 0 1 2 3
+exec 1>$LOG_LOCATION/"${scriptname}".log 2>&1
 echo ""
 echo "Log Location: [ $LOG_LOCATION ]"
 echo ""
