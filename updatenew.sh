@@ -403,7 +403,7 @@ elif [[ -n $APT_GET_CMD ]]; then
  	    echo ""
 
  	    echo ""
-		echo "To view the log file: [ less $LOG_LOCATION//"${scriptname}".log ]"
+		echo "To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ]"
 		echo ""
 
 #---------------------------------
