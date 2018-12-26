@@ -274,7 +274,7 @@ elif [[ -n $APT_GET_CMD ]]; then
   		#---------------------------------
 	    # Update all the repos.
 		#---------------------------------
-   		echo -e "\xE2\x9C\x94" Updating Repos 
+   		echo -e "\xE2\x9C\x94" Updating Repos |tee -a $LOG_LOCATION/$scriptname
    		yes | sudo apt-get update >> $LOG_LOCATION/$scriptname
 
    		#---------------------------------
@@ -332,7 +332,7 @@ elif [[ -n $APT_GET_CMD ]]; then
     	# if not it will install it. 
 		#---------------------------------
     	if apt-get -qq install ntp ntpstat; then 
-    		echo -e "\xE2\x9C\x94" NTP Successfully Installed
+    		echo -e "\xE2\x9C\x94" NTP Successfully Installed |tee -a $LOG_LOCATION/$scriptname
 		else
     		yes | sudo apt-get install ntp ntpstat >> $LOG_LOCATION/$scriptname
 		fi  
@@ -391,7 +391,6 @@ elif [[ -n $APT_GET_CMD ]]; then
 		#---------------------------------
 		# Show NTP servers
 		#---------------------------------
-		echo "" 
 		echo -e "\xE2\x9C\x94" Showing current NTP Servers
 		echo ""
 		ntpq -p 
