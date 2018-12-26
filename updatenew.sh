@@ -154,13 +154,6 @@ if [[ -n $YUM_CMD ]]; then
    			echo -e "\xE2\x9C\x94" "$SERVICE is not running or has been disabled."
    		fi
 
-		#echo "" 
-		#echo "# End of disabling Chronyd Service #"
-		#echo "" 
-
-		#echo ""
- 	    #echo "# Configuring NTP on $(timestamp) #"
-
     	#-------------------------------------------------------------------------------------
 		# Checks to see if NTP is installed. If it is, continues to check if the config file
     	# is modified if not it will install it and update the config file
@@ -231,10 +224,6 @@ if [[ -n $YUM_CMD ]]; then
 		echo ""
 		ntpstat
 		echo ""
-
-		#echo ""
- 	    #echo "# Completed NTP Configuration on $(timestamp) #"
- 	    #echo ""
 
 		echo ""
 		echo "To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ]"
