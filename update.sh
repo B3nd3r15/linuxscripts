@@ -265,10 +265,6 @@ elif [[ -n $APT_GET_CMD ]]; then
     	echo ""
     	echo "# End of Upgrade on $(timestamp) #"
 
-    	echo ""
- 	    echo "# Checking for new LTS release on $(timestamp) #"
- 	    echo ""
-
     	#---------------------------------
 		# Ask user if they would like to
 		# check for new LTS release
@@ -285,14 +281,6 @@ elif [[ -n $APT_GET_CMD ]]; then
 			echo ""
     		echo "No action taken."
 		fi
-
-		echo ""
- 	    echo "# Completed Checking for LTS release on $(timestamp) #"
- 	    echo ""
-
- 	    echo ""
- 	    echo "# Configuring NTP on $(timestamp) #"
- 	    echo ""
 
  	    #---------------------------------
     	# Checks to see if NTP is installed. If it is, continues to modify config file.
@@ -364,10 +352,6 @@ elif [[ -n $APT_GET_CMD ]]; then
 		echo ""
 		ntpstat
 		echo ""
-
-		echo ""
- 	    echo "# Completed NTP Configuration on $(timestamp) #"
- 	    echo ""
 
  	    echo ""
 		echo "To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ]"
