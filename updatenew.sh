@@ -274,42 +274,29 @@ elif [[ -n $APT_GET_CMD ]]; then
   		#---------------------------------
 	    # Update all the repos.
 		#---------------------------------
-   		echo ""
    		echo -e "\xE2\x9C\x94" Updating Repos 
-   		echo ""
    		yes | sudo apt-get update >> $LOG_LOCATION/$scriptname
-   		echo ""
 
    		#---------------------------------
  	    # Upgrade all the things.
 		#---------------------------------
-		echo ""
  		echo -e "\xE2\x9C\x94" Upgrading System 
- 		echo ""
  		yes | sudo apt-get dist-upgrade >> $LOG_LOCATION/$scriptname
-   		echo ""
 
    		#---------------------------------
 	    # Remove old software.
 		#---------------------------------
-    	echo ""
  		echo -e "\xE2\x9C\x94" Removing Unused Software
- 		echo ""
  		yes|sudo apt-get autoremove >> $LOG_LOCATION/$scriptname
-    	echo ""
 
     	#---------------------------------
 	    # Purge config files
 		#---------------------------------
-    	echo ""
  		echo -e "\xE2\x9C\x94" Purging Leftover Config Files 
- 		echo ""
  		apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" >> $LOG_LOCATION/$scriptname
-    	echo ""
 
     	echo ""
     	echo "# End of Upgrade on $(timestamp) #"
-    	echo "" 
 
     	echo ""
  	    echo "# Checking for new LTS release on $(timestamp) #"
@@ -354,7 +341,6 @@ elif [[ -n $APT_GET_CMD ]]; then
 		# Checks to see if the config files need updated
 		#---------------------------------
 		if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
- 			echo ""
  			echo -e "\xE2\x9C\x94" NTP config file already updated.
 		else
 
