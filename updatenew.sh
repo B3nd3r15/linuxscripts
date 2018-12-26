@@ -158,8 +158,8 @@ if [[ -n $YUM_CMD ]]; then
 		#echo "# End of disabling Chronyd Service #"
 		#echo "" 
 
-		echo ""
- 	    echo "# Configuring NTP on $(timestamp) #"
+		#echo ""
+ 	    #echo "# Configuring NTP on $(timestamp) #"
 
     	#-------------------------------------------------------------------------------------
 		# Checks to see if NTP is installed. If it is, continues to check if the config file
@@ -169,8 +169,7 @@ if [[ -n $YUM_CMD ]]; then
     		echo ""
     		echo -e "\xE2\x9C\x94" NTP Successfully Installed
 		else
-			echo ""
-    		echo -e "\xE2\x9C\x94" Installing NTP
+			echo -e "\xE2\x9C\x94" Installing NTP
     		yes | sudo yum install ntp ntpd >> $LOG_LOCATION/"${scriptname}".log
 		fi  
 
@@ -178,19 +177,16 @@ if [[ -n $YUM_CMD ]]; then
 		# Checks to see if the config files need updated
 		#-------------------------------------------------
 		if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
- 			echo ""
  			echo -e "\xE2\x9C\x94" NTP conf file already updated.
 		else
-			echo ""
 			echo -e "\xE2\x9C\x94" Updating NTP conf file
 	
 
-		#-----------------------------------------------\------------------------------------
+		#------------------------------------------------------------------------------------
 		# The config files for ntp lies in /etc/ntp.conf
 		# We are changing the Servers time to google's public NTP servers
 		# Look here for more info : https://developers.google.com/time/guides#linux_ntpd
 		#-----------------------------------------------------------------------------------
-			echo "" 
 			echo -e "\xE2\x9C\x94" Modifying NTP config file
 			
 			#-------------------------------------------------
@@ -210,7 +206,6 @@ if [[ -n $YUM_CMD ]]; then
 			#-------------------------------------------------
 			# Restart, enable, and show the status of the service
 			#-------------------------------------------------
-			echo "" 
 			echo -e "\xE2\x9C\x94" Restarting NTP Service
 			sudo systemctl stop ntpd
 			sleep 2
@@ -225,13 +220,11 @@ if [[ -n $YUM_CMD ]]; then
 		# Give ntp service time to start up and talk to time*.google.com
 		#-------------------------------------------------
 		sleep 5
-		echo ""
 		echo -e "\xE2\x9C\x94" Waiting for NTP service to start
 
 		#-------------------------------------------------
 		# Show NTP servers
 		#-------------------------------------------------
-		echo "" 
 		echo -e "\xE2\x9C\x94" Showing current NTP Servers
 		echo ""
 		ntpq -p
@@ -239,9 +232,9 @@ if [[ -n $YUM_CMD ]]; then
 		ntpstat
 		echo ""
 
-		echo ""
- 	    echo "# Completed NTP Configuration on $(timestamp) #"
- 	    echo ""
+		#echo ""
+ 	    #echo "# Completed NTP Configuration on $(timestamp) #"
+ 	    #echo ""
 
 		echo ""
 		echo "To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ]"
