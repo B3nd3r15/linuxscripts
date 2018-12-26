@@ -78,7 +78,7 @@ echo ""
 #---------------------------------
 LOG_LOCATION=/var/log
 exec > >(tee -ai $LOG_LOCATION/"${scriptname}".log )
-exec 2>$LOG_LOCATION/"${scriptname}".log
+exec 2>&1
 echo ""
 echo "Log Location: [ $LOG_LOCATION ]"
 echo ""
@@ -403,7 +403,7 @@ elif [[ -n $APT_GET_CMD ]]; then
  	    echo ""
 
  	    echo ""
-		echo "Log Location: [ $LOG_LOCATION ]"
+		echo "To view the log file: [ less $LOG_LOCATION//"${scriptname}".log ]"
 		echo ""
 
 #---------------------------------
