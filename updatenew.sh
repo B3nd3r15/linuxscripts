@@ -98,67 +98,50 @@ if [[ -n $YUM_CMD ]]; then
 		#---------------------------------
 		echo ""
 		echo -e "\xE2\x9C\x94" Updating Yum
-		echo ""
 		yes | sudo yum update -y >> $LOG_LOCATION/"${scriptname}".log
 		
 		#---------------------------------
 		#	Install Updates
 		#---------------------------------
 		echo -e "\xE2\x9C\x94" Installing Updates
-		echo ""
 		yes | sudo yum upgrade >> $LOG_LOCATION/"${scriptname}".log
-		echo ""
 
 		#---------------------------------
 		#	Clean up unused pacakages
 		#---------------------------------
-		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum Packages
-		echo ""
 		yes | sudo yum clean packages >> $LOG_LOCATION/"${scriptname}".log
-		echo ""
 
 		#---------------------------------
 		#	Clean up Yum Metadata
 		#---------------------------------
-		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum Metadata
-		echo ""
 		yes | sudo yum clean metadata >> $LOG_LOCATION/"${scriptname}".log
-		echo ""
 
 		#---------------------------------
 		#	Clean Yum DB Cache
 		#---------------------------------
-		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning Up Yum DBCache
-		echo ""
 		yes | sudo yum clean dbcache >> $LOG_LOCATION/"${scriptname}".log
-		echo ""
 
 		#---------------------------------
 		#	Clean anything leftover
 		#---------------------------------
-		echo ""
 		echo -e "\xE2\x9C\x94" Cleaning up Yum Everything
-		echo ""
 		yes | sudo yum clean all >> $LOG_LOCATION/"${scriptname}".log
-		echo ""
 
 		#---------------------------------
 		#	Remove /var/cache/yum file
 		#---------------------------------
-		echo ""
 		echo -e "\xE2\x9C\x94" Removing /var/cache/yum
 		yes | sudo rm -rf /var/cache/yum >> $LOG_LOCATION/"${scriptname}".log
-		echo ""
 
 		echo "" 
 		echo "# End of Upgrade on $(timestamp) #" 
 		echo "" 
 
 		echo "" 
-		echo "# Start disable of Chronyd Service on $(timestamp) #"
+		echo "# Start disable of Chronyd Service #"
 		echo "" 
 
 		if P=$(pgrep $SERVICE); then
@@ -168,11 +151,11 @@ if [[ -n $YUM_CMD ]]; then
    			#Disable chronyd so it cannot start if server reboots.
    			systemctl disable chronyd
 		else
-   			echo "$SERVICE is not running or has been disabled."
+   			echo -e "\xE2\x9C\x94" "$SERVICE is not running or has been disabled."
    		fi
 
 		echo "" 
-		echo "# End of disabling Chronyd Service on $(timestamp) #"
+		echo "# End of disabling Chronyd Service #"
 		echo "" 
 
 		echo ""
