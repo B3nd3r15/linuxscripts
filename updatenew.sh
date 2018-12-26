@@ -140,9 +140,9 @@ if [[ -n $YUM_CMD ]]; then
 		echo "# End of Upgrade on $(timestamp) #" 
 		echo "" 
 
-		echo "" 
-		echo "# Start disable of Chronyd Service #"
-		echo "" 
+		#echo "" 
+		#echo "# Start disable of Chronyd Service #"
+		#echo "" 
 
 		if P=$(pgrep $SERVICE); then
    			echo "$SERVICE is running, PID is $P, Disabling chronyd service."
@@ -154,9 +154,9 @@ if [[ -n $YUM_CMD ]]; then
    			echo -e "\xE2\x9C\x94" "$SERVICE is not running or has been disabled."
    		fi
 
-		echo "" 
-		echo "# End of disabling Chronyd Service #"
-		echo "" 
+		#echo "" 
+		#echo "# End of disabling Chronyd Service #"
+		#echo "" 
 
 		echo ""
  	    echo "# Configuring NTP on $(timestamp) #"
