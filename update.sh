@@ -287,7 +287,7 @@ elif [[ -n $APT_GET_CMD ]]; then
     		 case $yn in
        		 [Yy]* ) do-release-upgrade;;
      		 [Nn]* ) ;;
-     	  		 * ) echo -e $red "Please answer yes or no.";; $reset
+     	  		 * ) echo "Please answer yes or no.";;
 			esac
 		else
 			echo ""
