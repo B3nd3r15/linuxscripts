@@ -103,37 +103,37 @@ if [[ -n $YUM_CMD ]]; then
 		#	Update
 		#---------------------------------
 		echo "" 
-		echo -e "${yellow}# Upgrading $osver on $(timestamp) #${reset}" 
+		echo -e $blue "# Upgrading $osver on $(timestamp) #" $reset
 		
 		#---------------------------------
 		#	Update Yum
 		#---------------------------------
 		echo ""
-		echo -e ${green} ${check} Updating Yum $reset
+		echo -e $green $check Updating Yum $reset
 		yes | sudo yum update -y >> $LOG_LOCATION/"${scriptname}".log
 		
 		#---------------------------------
 		#	Install Updates
 		#---------------------------------
-		echo -e ${green} ${check} Installing Updates $reset
+		echo -e $green $check Installing Updates $reset
 		yes | sudo yum upgrade >> $LOG_LOCATION/"${scriptname}".log
 
 		#---------------------------------
 		#	Clean up unused pacakages
 		#---------------------------------
-		echo -e ${green} ${check} Cleaning Up Yum Packages $reset
+		echo -e $green $check Cleaning Up Yum Packages $reset
 		yes | sudo yum clean packages >> $LOG_LOCATION/"${scriptname}".log
 
 		#---------------------------------
 		#	Clean up Yum Metadata
 		#---------------------------------
-		echo -e ${green} ${check} Cleaning Up Yum Metadata $reset
+		echo -e $green $check Cleaning Up Yum Metadata $reset
 		yes | sudo yum clean metadata >> $LOG_LOCATION/"${scriptname}".log
 
 		#---------------------------------
 		#	Clean Yum DB Cache
 		#---------------------------------
-		echo -e ${green} ${check} Cleaning Up Yum DBCache $reset
+		echo -e $green $check Cleaning Up Yum DBCache $reset
 		yes | sudo yum clean dbcache >> $LOG_LOCATION/"${scriptname}".log
 
 		#---------------------------------
@@ -145,11 +145,11 @@ if [[ -n $YUM_CMD ]]; then
 		#---------------------------------
 		#	Remove /var/cache/yum file
 		#---------------------------------
-		echo -e ${green} ${check} Removing /var/cache/yum $reset
+		echo -e $green $check Removing /var/cache/yum $reset
 		yes | sudo rm -rf /var/cache/yum >> $LOG_LOCATION/"${scriptname}".log
 
 		echo "" 
-		echo -e "${yellow}# End of Upgrade on $(timestamp) #" $reset
+		echo -e $blue "# End of Upgrade on $(timestamp) #" $reset
 		echo "" 
 
 		#echo "" 
@@ -247,7 +247,7 @@ elif [[ -n $APT_GET_CMD ]]; then
  	    # Update all the things!
 		#---------------------------------
  		echo ""
-  		echo -e $yellow "# Upgrading $osver on $(timestamp) #" $reset
+  		echo -e $blue "# Upgrading $osver on $(timestamp) #" $reset
   		echo ""
 
   		#---------------------------------
@@ -275,7 +275,7 @@ elif [[ -n $APT_GET_CMD ]]; then
  		apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" >>$LOG_LOCATION/"${scriptname}".log
 
     	echo ""
-    	echo -e $yellow "# End of Upgrade on $(timestamp) #" $reset
+    	echo -e $blue "# End of Upgrade on $(timestamp) #" $reset
     	echo ""
 
     	#---------------------------------
