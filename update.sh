@@ -276,6 +276,7 @@ elif [[ -n $APT_GET_CMD ]]; then
 
     	echo ""
     	echo -e $yellow "# End of Upgrade on $(timestamp) #" $reset
+    	echo ""
 
     	#---------------------------------
 		# Ask user if they would like to
