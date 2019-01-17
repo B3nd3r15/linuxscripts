@@ -292,7 +292,7 @@ elif [[ -n $APT_GET_CMD ]]; then
 			esac
 		else
 			echo ""
-    		echo $green "No action taken." $reset
+    		echo -e $green "No action taken." $reset
 		fi
 
  	    #---------------------------------
@@ -300,6 +300,7 @@ elif [[ -n $APT_GET_CMD ]]; then
     	# if not it will install it. 
 		#---------------------------------
     	if apt-get -qq install ntp ntpstat; then 
+    		echo ""
     		echo -e $green $check NTP Successfully Installed $reset
 		else
 			yes | sudo apt-get install ntp ntpstat >> $LOG_LOCATION/"${scriptname}".log
@@ -374,6 +375,6 @@ elif [[ -n $APT_GET_CMD ]]; then
 # If neither Yum or Apt are installed, exit and have user manually install updates on their system.
 #---------------------------------
 else
-	echo "Cannot determine installed packaging system, Please manually update." | sed "s/$/ [$(date +"%Y-%m-%d %T")]/" $reset
+	echo -e $red "Cannot determine installed packaging system, Please manually update." | sed "s/$/ [$(date +"%Y-%m-%d %T")]/" $reset
  	exit 1;
 fi
