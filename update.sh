@@ -139,7 +139,7 @@ if [[ -n $YUM_CMD ]]; then
 		#---------------------------------
 		#	Clean anything leftover
 		#---------------------------------
-		echo -e "\xE2\x9C\x94" Cleaning up Yum Everything $reset
+		echo -e $green $check Cleaning up Yum Everything $reset
 		yes | sudo yum clean all >> $LOG_LOCATION/"${scriptname}".log
 
 		#---------------------------------
