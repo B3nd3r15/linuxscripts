@@ -93,6 +93,16 @@ exec > >(tee -ai $LOG_LOCATION/"${scriptname}".log )
 exec 2>&1
 echo ""
 
+#---------------------------------
+#	handle command line options
+#---------------------------------
+if [[ $1 == "-h" ]]; then
+        echo "usage: $0"
+        echo " -h prints help"
+
+        exit 1
+fi
+
 #--------------------------------------------------
 #	Determine Installed packaging system
 #--------------------------------------------------
@@ -284,13 +294,13 @@ elif [[ -n $APT_GET_CMD ]]; then
 		#---------------------------------
 		if do-release-upgrade -c; then 
     		echo ""
-    		read -p "Would you like to install the new LTS release? N " yesno
-    		yesno=${yesno:-n}
-			echo $name
-    		 case $yn in
+    		read  -t 10 -p "Would you like to install the new LTS release?  " -e -i 'N' input
+    		yesno=${input:-n}
+    		echo ""
+    		case $yesno in
        		 [Yy]* ) do-release-upgrade;;
-     		 [Nn]* ) ;;
-     	  		 * ) echo "Please answer yes or no.";;
+     		 [Nn]* ) echo -e $green "Not Upgrading System" $reset;;
+     	  		 * ) echo -e $yellow "Please answer Yes or No." $reset;;
 			esac
 		else
 			echo ""
