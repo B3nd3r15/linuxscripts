@@ -300,8 +300,8 @@ aptupdate() {
                 echo ""
                 case $yn in
                 [Yy]* ) do-release-upgrade;;
-                [Nn]* ) echo -e $yellow "Skiping Upgrade";; $reset
-                    * ) echo -e $red "Please answer yes or no";; $reset
+                [Nn]* ) ;;
+                    * ) echo -e $yellow "Skipping Upgrade" $reset;;
                 esac
         else
                 echo ""
