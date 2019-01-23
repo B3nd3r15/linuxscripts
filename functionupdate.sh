@@ -405,6 +405,7 @@ if (( EUID != 0 )); then
         exit
 fi
 
+echo "BOOM!!"
 
 #--------------------------------------------------
 #       Determine Installed packaging system
