@@ -70,12 +70,12 @@ timestamp()
 #---------------------------------
 #       Run as Root
 #---------------------------------
-
-if (( EUID != 0 )); then
-    sudo /home/"$USER"/"$scriptname"
-        exit
-fi
-
+#
+#if (( EUID != 0 )); then
+#    sudo /home/"$USER"/"$scriptname"
+#        exit
+#fi
+#
 #---------------------------------
 #       chronyd service
 #---------------------------------
@@ -98,12 +98,12 @@ echo ""
 #---------------------------------
 # handle command line options
 #---------------------------------
-if [[ $1 == "-h" ]]; then
-        echo "usage: $0"
-        echo " -h prints help"
-
-        exit 1
-fi
+#if [[ $1 == "-h" ]]; then
+#        echo "usage: $0"
+#        echo " -h prints help"
+#
+#        exit 1
+#fi
 
 
 yumupdate() {
@@ -384,6 +384,26 @@ aptupdate() {
         echo -e $cyan "To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ]" $reset
         echo ""
 }
+
+
+#---------------------------------
+# handle command line options
+#---------------------------------
+if [[ $1 == "-h" ]]; then
+        echo "usage: $0"
+        echo " -h prints help"
+
+        exit 1
+fi
+
+#---------------------------------
+#       Run as Root
+#---------------------------------
+
+if (( EUID != 0 )); then
+    sudo /home/"$USER"/"$scriptname"
+        exit
+fi
 
 
 #--------------------------------------------------
