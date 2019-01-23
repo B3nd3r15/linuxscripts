@@ -295,11 +295,13 @@ aptupdate() {
 #---------------------------------
         if do-release-upgrade -c; then
                 echo ""
-                read -p "Would you like to install the new LTS release? " yn
+                read  -t 10 -p "Would you like to install the new LTS release?  " -e -i 'N' input
+                yesno=${input:-n}
+                echo ""
                 case $yn in
                 [Yy]* ) do-release-upgrade;;
-                [Nn]* ) ;;
-                    * ) echo "Please answer yes or no.";;
+                [Nn]* ) echo -e $yellow "Skiping Upgrade";; $reset
+                    * ) echo -e $red "Please answer yes or no.";; $reset
                 esac
         else
                 echo ""
