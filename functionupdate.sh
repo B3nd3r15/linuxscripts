@@ -85,16 +85,6 @@ APT_GET_CMD=$(command -v apt-get)
 SERVICE=chronyd;
 
 #---------------------------------
-# handle command line options
-#---------------------------------
-if [[ $1 == "-h" ]]; then
-        echo "usage: $0"
-        echo " -h prints help"
-
-        exit 1
-fi
-
-#---------------------------------
 # Timestamp function
 #---------------------------------
 timestamp()
@@ -306,8 +296,8 @@ aptupdate() {
                 echo ""
         case $yesno in
                 [Yy]* ) do-release-upgrade;;
-                [Nn]* ) ;;
-                * ) echo -e $yellow "Skipping Upgrade" $reset;;
+                [Nn]* ) echo -e $yellow "Skipping Upgrade" $reset;;
+                * ) echo -e $yellow "Invalid option, Skipping Upgrade" $reset;;
                 esac
         else
                 echo ""
@@ -391,6 +381,16 @@ aptupdate() {
         echo -e $cyan "To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ]" $reset
         echo ""
 }
+
+#---------------------------------
+# handle command line options
+#---------------------------------
+if [[ $1 == "-h" ]]; then
+        echo "usage: $0"
+        echo " -h prints help"
+
+        exit 1
+fi
 
 #--------------------------------------------------
 #       Determine Installed packaging system
