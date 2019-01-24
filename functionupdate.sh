@@ -2,23 +2,23 @@
 
 #################################################################################################################
 #
-#         NAME:  functionupdate.sh
+#       NAME: update.sh
 #
 #       AUTHOR:  B3nd3r
 #
-#      SUPPORT:  None
+#       SUPPORT:  None
 #
-#  DESCRIPTION:  Update Linux Server
+#       DESCRIPTION:  Update Linux Server
 #
 #################################################################################################################
 #
-#  ASSUMPTIONS: Script is run manually, target server has access to internet.
+#       ASSUMPTIONS: Script is run manually, target server has access to internet.
 #
 #################################################################################################################
 #
 #                 AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
-#  VER 0.1.0      B3nd3r      2019/01/23    - Initial creation and release.
+#  VER 0.1.0      B3nd3r      2019/01/23    Initial creation and release.
 #
 #################################################################################################################
 
@@ -26,6 +26,23 @@
 #--------------------------
 # Variables
 #--------------------------
+
+#---------------------------------
+#       Run as Root
+#---------------------------------
+
+if (( EUID != 0 )); then
+        sudo /home/"$USER"/"$scriptname"
+        exit
+fi
+
+#---------------------------------
+#       Set log Location
+#---------------------------------
+LOG_LOCATION=/var/log
+exec > >(tee -ai $LOG_LOCATION/"${scriptname}".log )
+exec 2>&1
+echo ""
 
 #----------------------------------
 # Bash Colors
@@ -60,40 +77,9 @@ YUM_CMD=$(command -v yum)
 APT_GET_CMD=$(command -v apt-get)
 
 #---------------------------------
-# Timestamp function
-#---------------------------------
-timestamp()
-{
- date +"%Y-%m-%d %T"
-}
-
-#---------------------------------
-#       Run as Root
-#---------------------------------
-
-if (( EUID != 0 )); then
-    sudo /home/"$USER"/"$scriptname"
-        exit
-fi
-
-#---------------------------------
 #       chronyd service
 #---------------------------------
 SERVICE=chronyd;
-
-#---------------------------------
-#       Clear the screen
-#---------------------------------
-clear 
-echo ""
-
-#---------------------------------
-#       Set log Location
-#---------------------------------
-LOG_LOCATION=/var/log
-exec > >(tee -ai $LOG_LOCATION/"${scriptname}".log )
-exec 2>&1
-echo ""
 
 #---------------------------------
 # handle command line options
@@ -105,7 +91,23 @@ if [[ $1 == "-h" ]]; then
         exit 1
 fi
 
+#---------------------------------
+# Timestamp function
+#---------------------------------
+timestamp()
+{
+ date +"%Y-%m-%d %T"
+}
 
+#---------------------------------
+#       Clear the screen
+#---------------------------------
+clear 
+echo ""
+
+#---------------------------------
+#       Yum Function
+#---------------------------------
 yumupdate() {
 
 #---------------------------------
@@ -250,7 +252,9 @@ yumupdate() {
         echo ""
 }
 
-
+#---------------------------------
+#       Apt Function
+#---------------------------------
 aptupdate() {
 
 #---------------------------------
@@ -289,8 +293,8 @@ aptupdate() {
         echo ""
 
 #---------------------------------
-# Ask user if they would like to
-# check for new LTS release
+# Ask user if they would like 
+# to check for new LTS release
 #---------------------------------
         if do-release-upgrade -c; then
                 echo ""
@@ -341,7 +345,7 @@ aptupdate() {
                 sed -i 's/server/#&/' /etc/ntp.conf
 
 #---------------------------------
-# Add the new servers to the end of the file.   
+# Add the new servers to the end of the file.
 #---------------------------------
                 sed -i "\$aserver time1.google.com iburst" /etc/ntp.conf
                 sed -i "\$aserver time2.google.com iburst" /etc/ntp.conf
