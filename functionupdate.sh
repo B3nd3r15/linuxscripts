@@ -31,6 +31,11 @@
 #--------------------------
 
 #---------------------------------
+# Pulls the script name without directory paths
+#---------------------------------
+scriptname="$(basename "${0}")"
+
+#---------------------------------
 #       Run as Root
 #---------------------------------
 
@@ -58,11 +63,6 @@ blue="\033[0;34m"         # Blue
 cyan="\033[0;36m"         # Cyan
 white="\033[0;37m"        # White
 check="\xE2\x9C\x94"      # Check Mark
-
-#---------------------------------
-# Pulls the script name without directory paths
-#---------------------------------
-scriptname="$(basename "${0}")"
 
 #---------------------------------
 # Gets OS Version
