@@ -390,12 +390,11 @@ if [[ $1 == "-h" ]]; then
         echo " -h prints help"
 
         exit 1
-fi
 
 #--------------------------------------------------
 #       Determine Installed packaging system
 #--------------------------------------------------
-if [[ -n $YUM_CMD ]]; then
+elif [[ -n $YUM_CMD ]]; then
         yumupdate
 elif [[ -n $APT_GET_CMD ]]; then
         aptupdate
