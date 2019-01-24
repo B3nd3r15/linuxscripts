@@ -10,6 +10,9 @@
 #
 #       DESCRIPTION:  Update Linux Server
 #
+#       License: GPL-3.0
+#       https://github.com/B3nd3r15/linuxscripts/blob/master/LICENSE
+#
 #################################################################################################################
 #
 #       ASSUMPTIONS: Script is run manually, target server has access to internet.
