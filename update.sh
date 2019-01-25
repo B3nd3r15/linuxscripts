@@ -98,6 +98,12 @@ timestamp()
 clear 
 echo ""
 
+abort()
+{
+  echo -e "\n${RED}###############################################################\n\n          An error occurred. Aborting script..\nPlease check the log file for errors!\n\n${RESET}"
+  exit 1
+}
+
 #---------------------------------
 #       Yum Function
 #---------------------------------
@@ -114,43 +120,43 @@ yumupdate() {
 #---------------------------------
         echo ""
         echo -e "$green" "$check" Updating Yum "$reset"
-        yes | sudo yum update -y | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum update -y | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
 
 #---------------------------------
 #       Install Updates
 #---------------------------------
         echo -e "$green" "$check" Installing Updates "$reset"
-        yes | sudo yum upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
 
 #---------------------------------
 #       Clean up unused pacakages
 #---------------------------------
         echo -e "$green" "$check" Cleaning Up Yum Packages "$reset"
-        yes | sudo yum clean packages | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum clean packages | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
 
 #---------------------------------
 #       Clean up Yum Metadata
 #---------------------------------
         echo -e "$green" "$check" Cleaning Up Yum Metadata "$reset"
-        yes | sudo yum clean metadata | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum clean metadata | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
 
 #---------------------------------
 #       Clean Yum DB Cache
 #---------------------------------
         echo -e "$green" "$check" Cleaning Up Yum DBCache "$reset"
-        yes | sudo yum clean dbcache | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum clean dbcache | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
 
 #---------------------------------
 #       Clean anything leftover
 #---------------------------------
         echo -e "$green" "$check" Cleaning up Yum Everything "$reset"
-        yes | sudo yum clean all | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum clean all | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
 
 #---------------------------------
 #       Remove /var/cache/yum file
 #---------------------------------
         echo -e "$green" "$check" Removing /var/cache/yum "$reset"
-        yes | sudo rm -rf /var/cache/yum | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo rm -rf /var/cache/yum | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
 
         echo ""
         echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
@@ -162,9 +168,9 @@ yumupdate() {
         if P=$(pgrep $SERVICE); then
                  echo -e "$red" "$SERVICE" is running, PID is "$P", Disabling chronyd service. "$reset"
                 #Stop the Chronyd Service
-                systemctl stop chronyd
+                systemctl stop chronyd || abort
                 #Disable chronyd so it cannot start if server reboots.
-                systemctl disable chronyd
+                systemctl disable chronyd || abort
         else
                 echo -e "$green" "$check" "$SERVICE" is not running or has been disabled. "$reset"
         fi
@@ -178,7 +184,7 @@ yumupdate() {
                 echo -e "$green" "$check" NTP Successfully Installed "$reset"
         else
                 echo -e "$yellow" "$check" Installing NTP "$reset"
-                yes | sudo yum install ntp ntpd | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+                yes | sudo yum install ntp ntpd | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
         fi
 
 #-------------------------------------------------
@@ -215,13 +221,13 @@ yumupdate() {
 # Restart, enable, and show the status of the service
 #-------------------------------------------------
                 echo -e "$green" "$check" Restarting NTP Service "$reset"
-                sudo systemctl stop ntpd
+                sudo systemctl stop ntpd || abort
                 sleep 2
-                sudo systemctl start ntpd
+                sudo systemctl start ntpd || abort
                 sleep 2
-                sudo systemctl enable ntpd
+                sudo systemctl enable ntpd || abort
                 sleep 2
-                sudo systemctl status ntpd
+                sudo systemctl status ntpd || abort
         fi
 
 #-------------------------------------------------
@@ -235,9 +241,9 @@ yumupdate() {
 #-------------------------------------------------
         echo -e "$green" "$check" Showing current NTP Servers "$reset"
         echo ""
-        ntpq -p
+        ntpq -p || abort
         echo ""
-        ntpstat
+        ntpstat || abort
         echo ""
 
         echo ""
@@ -261,25 +267,25 @@ aptupdate() {
 # Update all the repos.
 #---------------------------------
         echo -e "$green" "$check" Updating Repos "$reset"
-        yes | sudo apt-get update | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo apt-get update | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
 
 #---------------------------------
 # Upgrade all the things.
 #---------------------------------
         echo -e "$green" "$check" Upgrading System "$reset"
-        yes | sudo apt-get dist-upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo apt-get dist-upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
 
 #---------------------------------
 # Remove old software.
 #---------------------------------
         echo -e "$green" "$check" Removing Unused Software "$reset"
-        yes|sudo apt-get autoremove | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes|sudo apt-get autoremove | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
 
 #---------------------------------
 # Purge config files
 #---------------------------------
         echo -e "$green" "$check" Purging Leftover Config Files "$reset"
-        apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
 
         echo ""
         echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
@@ -295,7 +301,7 @@ aptupdate() {
                 yesno=${input:-n}
                 echo ""
         case $yesno in
-                [Yy]* ) do-release-upgrade;;
+                [Yy]* ) do-release-upgrade;; || abort
                 [Nn]* ) echo -e "$yellow" "Skipping Upgrade" "$reset";;
                 * ) echo -e "$yellow" "Invalid option, Skipping Upgrade" "$reset";;
                 esac
@@ -313,7 +319,7 @@ aptupdate() {
                 echo ""
                 echo -e "$green" "$check" NTP Successfully Installed "$reset"
         else
-                yes | sudo apt-get install ntp ntpstat | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+                yes | sudo apt-get install ntp ntpstat | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
         fi
 
 #---------------------------------
@@ -351,13 +357,13 @@ aptupdate() {
                 echo ""
                 echo -e "$green" "$check" Restarting NTP Service "$reset"
                 echo ""
-                sudo systemctl stop ntp
+                sudo systemctl stop ntp || abort
                 sleep 2
-                sudo systemctl start ntp
+                sudo systemctl start ntp || abort
                 sleep 2
-                sudo systemctl enable ntp
+                sudo systemctl enable ntp || abort
                 sleep 2
-                sudo systemctl status ntp
+                sudo systemctl status ntp || abort
 
 #---------------------------------
 # Sleep 5 seconds to give the service time to start and talk to the servers
@@ -372,9 +378,9 @@ aptupdate() {
 #---------------------------------
         echo -e "$green" "$check" Showing current NTP Servers "$reset"
         echo ""
-        ntpq -p
+        ntpq -p || abort
         echo ""
-        ntpstat
+        ntpstat || abort
         echo ""
 
         echo ""
@@ -386,10 +392,10 @@ aptupdate() {
 #       Determine Installed packaging system
 #--------------------------------------------------
 if [[ -n $YUM_CMD ]]; then
-        yumupdate
+        yumupdate || abort
 
 elif [[ -n $APT_GET_CMD ]]; then
-        aptupdate
+        aptupdate || abort
 
 #---------------------------------
 # If neither Yum or Apt are installed, exit and have user manually install updates on their system.
