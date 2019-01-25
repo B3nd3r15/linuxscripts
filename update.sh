@@ -321,18 +321,6 @@ aptupdate() {
         fi
 
 #---------------------------------
-# Checks to see if NTP is installed. If it is, continues to modify config file.
-# if not it will install it.
-#---------------------------------
-
-        if apt-get -qq install ntp ntpstat; then
-                echo ""
-                echo -e "$green" "$check" NTP Successfully Installed "$reset"
-        else
-                yes | sudo apt-get install ntp ntpstat | sudo tee -a $LOG_LOCATION/"${scriptname}".log
-        fi
-
-#---------------------------------
 # Checks to see if the config files need updated
 #---------------------------------
         if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
