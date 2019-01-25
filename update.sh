@@ -366,7 +366,7 @@ aptupdate() {
                 yesno=${input:-n}
                 echo ""
         case $yesno in
-                [Yy]* ) do-release-upgrade;; || abort
+                [Yy]* ) do-release-upgrade || abort;;
                 [Nn]* ) echo -e "$yellow" "Skipping Upgrade" "$reset";;
                 * ) echo -e "$yellow" "Invalid option, Skipping Upgrade" "$reset";;
                 esac
