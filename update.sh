@@ -113,15 +113,13 @@ ntpconfig() {
     if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
         echo -e "$green" "$check" NTP conf file already updated. "$reset"
     else
-        echo -e "$yellow" "$check" Updating NTP conf file "$reset"
-
 
 #------------------------------------------------------------------------------------
 # The config files for ntp lies in /etc/ntp.conf
 # We are changing the Servers time to google's public NTP servers
 # Look here for more info : https://developers.google.com/time/guides#linux_ntpd
 #-----------------------------------------------------------------------------------
-        echo -e "$yellow" "$check" Modifying NTP config file "$reset"
+        echo -e "$yellow" "$check" Updating NTP conf file "$reset"
 
 #-------------------------------------------------
 # Comment out the default pool servers.
@@ -136,36 +134,7 @@ ntpconfig() {
         sed -i "\$aserver time2.google.com iburst" /etc/ntp.conf
         sed -i "\$aserver time3.google.com iburst" /etc/ntp.conf
         sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
-
-#-------------------------------------------------
-# Restart, enable, and show the status of the service
-#-------------------------------------------------
-        echo -e "$green" "$check" Restarting NTP Service "$reset"
-        sudo systemctl stop ntpd || abort
-        sleep 2
-        sudo systemctl start ntpd || abort
-        sleep 2
-        sudo systemctl enable ntpd || abort
-        sleep 2
-        sudo systemctl status ntpd || abort
     fi
-
-#-------------------------------------------------
-# Give ntp service time to start up and talk to time*.google.com
-#-------------------------------------------------
-        sleep 5
-        echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
-
-#-------------------------------------------------
-# Show NTP servers
-#-------------------------------------------------
-        echo -e "$green" "$check" Showing current NTP Servers "$reset"
-        echo ""
-        ntpq -p || abort
-        echo ""
-        ntpstat || abort
-        echo ""
-
 }
 
 #---------------------------------
@@ -251,48 +220,22 @@ yumupdate() {
                 yes | sudo yum install ntp ntpd | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
         fi
 
+#-------------------------------------------------
+# Configure NTP service
+#-------------------------------------------------
 ntpconfig
-##-------------------------------------------------
-## Checks to see if the config files need updated
-##-------------------------------------------------
-#        if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
-#                echo -e "$green" "$check" NTP conf file already updated. "$reset"
-#        else
-#                echo -e "$yellow" "$check" Updating NTP conf file "$reset"
-#
-#
-##------------------------------------------------------------------------------------
-## The config files for ntp lies in /etc/ntp.conf
-## We are changing the Servers time to google's public NTP servers
-## Look here for more info : https://developers.google.com/time/guides#linux_ntpd
-##-----------------------------------------------------------------------------------
-#                echo -e "$yellow" "$check" Modifying NTP config file "$reset"
-#
-##-------------------------------------------------
-## Comment out the default pool servers.
-##-------------------------------------------------
-#                sed -i 's/pool/#&/' /etc/ntp.conf
-#                sed -i 's/server/#&/' /etc/ntp.conf
-#
-##-------------------------------------------------
-## Add the new servers to the end of the file.
-##-------------------------------------------------
-#                sed -i "\$aserver time1.google.com iburst" /etc/ntp.conf
-#                sed -i "\$aserver time2.google.com iburst" /etc/ntp.conf
-#                sed -i "\$aserver time3.google.com iburst" /etc/ntp.conf
-#                sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
-#
-##-------------------------------------------------
-## Restart, enable, and show the status of the service
-##-------------------------------------------------
-#                echo -e "$green" "$check" Restarting NTP Service "$reset"
-#                sudo systemctl stop ntpd || abort
-#                sleep 2
-#                sudo systemctl start ntpd || abort
-#                sleep 2
-#                sudo systemctl enable ntpd || abort
-#                sleep 2
-#                sudo systemctl status ntpd || abort
+
+#-------------------------------------------------
+# Restart, enable, and show the status of the service
+#-------------------------------------------------
+                echo -e "$green" "$check" Restarting NTP Service "$reset"
+                sudo systemctl stop ntpd || abort
+                sleep 2
+                sudo systemctl start ntpd || abort
+                sleep 2
+                sudo systemctl enable ntpd || abort
+                sleep 2
+                sudo systemctl status ntpd || abort
 #        fi
 
 #-------------------------------------------------
@@ -389,72 +332,46 @@ aptupdate() {
                 yes | sudo apt-get install ntp ntpstat | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
         fi
 
+#-------------------------------------------------
+# Configure NTP service
+#-------------------------------------------------
 ntpconfig
-#
-##---------------------------------
-## Checks to see if the config files need updated
-##---------------------------------
-#        if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
-#                echo -e "$green" "$check" NTP config file already updated. "$reset"
-#        else
-#
-##---------------------------------
-## The config files for ntp lies in /etc/ntp.conf
-## We are changing the Servers time to google's public NTP servers
-## Look here for more info : https://developers.google.com/time/guides#linux_ntpd
-##---------------------------------
-#                echo "" 
-#                echo -e "$yellow" "$check" Modifying NTP config file "$reset"
-#
-##---------------------------------
-## Comment out the default pool servers.
-##---------------------------------
-#                sed -i 's/pool/#&/' /etc/ntp.conf
-#                sed -i 's/server/#&/' /etc/ntp.conf
-#
-##---------------------------------
-## Add the new servers to the end of the file.
-##---------------------------------
-#                sed -i "\$aserver time1.google.com iburst" /etc/ntp.conf
-#                sed -i "\$aserver time2.google.com iburst" /etc/ntp.conf
-#                sed -i "\$aserver time3.google.com iburst" /etc/ntp.conf
-#                sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
-#
-##---------------------------------
-## Restart the NTP service.
-##---------------------------------
-#                echo ""
-#                echo -e "$green" "$check" Restarting NTP Service "$reset"
-#                echo ""
-#                sudo systemctl stop ntp || abort
-#                sleep 2
-#                sudo systemctl start ntp || abort
-#                sleep 2
-#                sudo systemctl enable ntp || abort
-#                sleep 2
-#                sudo systemctl status ntp || abort
+
+#---------------------------------
+# Restart the NTP service.
+#---------------------------------
+                echo ""
+                echo -e "$green" "$check" Restarting NTP Service "$reset"
+                echo ""
+                sudo systemctl stop ntp || abort
+                sleep 2
+                sudo systemctl start ntp || abort
+                sleep 2
+                sudo systemctl enable ntp || abort
+                sleep 2
+                sudo systemctl status ntp || abort
 
 #---------------------------------
 # Sleep 5 seconds to give the service time to start and talk to the servers
 #---------------------------------
-#                echo ""
-#                echo -e "$yellow" "$check" "Waiting for NTP service to start" "$reset"
-#                sleep 5
-#        fi
-#
-##---------------------------------
-## Show NTP servers
-##---------------------------------
-#        echo -e "$green" "$check" "Showing current NTP Servers" "$reset"
-#        echo ""
-#        ntpq -p || abort
-#        echo ""
-#        ntpstat || abort
-#        echo ""
-#
-#        echo ""
-#        echo -e "$cyan" "To view the log file: [ less $LOG_LOCATION/${scriptname}.log ]" "$reset"
-#        echo ""
+                echo ""
+                echo -e "$yellow" "$check" "Waiting for NTP service to start" "$reset"
+                sleep 5
+
+
+#---------------------------------
+# Show NTP servers
+#---------------------------------
+        echo -e "$green" "$check" "Showing current NTP Servers" "$reset"
+        echo ""
+        ntpq -p || abort
+        echo ""
+        ntpstat || abort
+        echo ""
+
+        echo ""
+        echo -e "$cyan" "To view the log file: [ less $LOG_LOCATION/${scriptname}.log ]" "$reset"
+        echo ""
 }
 
 #--------------------------------------------------
