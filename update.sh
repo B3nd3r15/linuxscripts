@@ -231,14 +231,14 @@ yumupdate() {
                 sudo systemctl enable ntpd || abort
                 sleep 2
                 sudo systemctl status ntpd || abort
-        fi
 
 #-------------------------------------------------
 # Give ntp service time to start up and talk to time*.google.com
 #-------------------------------------------------
-        sleep 5
         echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
+        sleep 5
 
+        fi
 #-------------------------------------------------
 # Show NTP servers
 #-------------------------------------------------
@@ -361,11 +361,10 @@ aptupdate() {
                 sleep 2
                 sudo systemctl status ntp || abort
 
-#---------------------------------
-# Sleep 5 seconds to give the service time to start and talk to the servers
-#---------------------------------
-                echo ""
-                echo -e "$yellow" "$check" "Waiting for NTP service to start" "$reset"
+#-------------------------------------------------
+# Give ntp service time to start up and talk to time*.google.com
+#-------------------------------------------------
+                echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
                 sleep 5
         fi
 
