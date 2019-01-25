@@ -298,18 +298,18 @@ ntpconfig
 #-------------------------------------------------
 # Give ntp service time to start up and talk to time*.google.com
 #-------------------------------------------------
-        sleep 5
-        echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
-
-#-------------------------------------------------
-# Show NTP servers
-#-------------------------------------------------
-        echo -e "$green" "$check" Showing current NTP Servers "$reset"
-        echo ""
-        ntpq -p || abort
-        echo ""
-        ntpstat || abort
-        echo ""
+#        sleep 5
+#        echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
+#
+##-------------------------------------------------
+## Show NTP servers
+##-------------------------------------------------
+#        echo -e "$green" "$check" Showing current NTP Servers "$reset"
+#        echo ""
+#        ntpq -p || abort
+#        echo ""
+#        ntpstat || abort
+#        echo ""
 
         echo ""
         echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
@@ -375,18 +375,21 @@ aptupdate() {
                 echo -e "$green" "No action taken." "$reset"
         fi
 
+#---------------------------------
+# Checks to see if NTP is installed. If it is, continues to modify config file.
+# if not it will install it.
+#---------------------------------
+
+        if apt-get -qq install ntp ntpstat; then
+                echo ""
+                echo -e "$green" "$check" "NTP Successfully Installed" "$reset"
+        else
+                echo ""
+                echo -e "$yellow" "Installing NTP" "$reset"
+                yes | sudo apt-get install ntp ntpstat | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
+        fi
+
 ntpconfig
-##---------------------------------
-## Checks to see if NTP is installed. If it is, continues to modify config file.
-## if not it will install it.
-##---------------------------------
-#
-#        if apt-get -qq install ntp ntpstat; then
-#                echo ""
-#                echo -e "$green" "$check" NTP Successfully Installed "$reset"
-#        else
-#                yes | sudo apt-get install ntp ntpstat | sudo tee -a $LOG_LOCATION/"${scriptname}".log || abort
-#        fi
 #
 ##---------------------------------
 ## Checks to see if the config files need updated
@@ -434,24 +437,24 @@ ntpconfig
 #---------------------------------
 # Sleep 5 seconds to give the service time to start and talk to the servers
 #---------------------------------
-                echo ""
-                echo -e "$yellow" "$check" "Waiting for NTP service to start" "$reset"
-                sleep 5
-        fi
-
-#---------------------------------
-# Show NTP servers
-#---------------------------------
-        echo -e "$green" "$check" "Showing current NTP Servers" "$reset"
-        echo ""
-        ntpq -p || abort
-        echo ""
-        ntpstat || abort
-        echo ""
-
-        echo ""
-        echo -e "$cyan" "To view the log file: [ less $LOG_LOCATION/${scriptname}.log ]" "$reset"
-        echo ""
+#                echo ""
+#                echo -e "$yellow" "$check" "Waiting for NTP service to start" "$reset"
+#                sleep 5
+#        fi
+#
+##---------------------------------
+## Show NTP servers
+##---------------------------------
+#        echo -e "$green" "$check" "Showing current NTP Servers" "$reset"
+#        echo ""
+#        ntpq -p || abort
+#        echo ""
+#        ntpstat || abort
+#        echo ""
+#
+#        echo ""
+#        echo -e "$cyan" "To view the log file: [ less $LOG_LOCATION/${scriptname}.log ]" "$reset"
+#        echo ""
 }
 
 #--------------------------------------------------
