@@ -241,7 +241,7 @@ yumupdate() {
 
 #--------------------------------------------------------------------------------------
 # Checks to see if NTP is installed. If it is, continues to check if the config file
-#dified if not it will install it and update the config file
+# is modified if not it will install it and update the config file
 #-------------------------------------------------------------------------------------
         if yum list installed | grep ntp.x86_64 > /dev/null 2>&1; then
                 echo ""
