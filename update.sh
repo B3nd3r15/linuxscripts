@@ -435,14 +435,14 @@ ntpconfig
 # Sleep 5 seconds to give the service time to start and talk to the servers
 #---------------------------------
                 echo ""
-                echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
+                echo -e "$yellow" "$check" "Waiting for NTP service to start" "$reset"
                 sleep 5
         fi
 
 #---------------------------------
 # Show NTP servers
 #---------------------------------
-        echo -e "$green" "$check" Showing current NTP Servers "$reset"
+        echo -e "$green" "$check" "Showing current NTP Servers" "$reset"
         echo ""
         ntpq -p || abort
         echo ""
