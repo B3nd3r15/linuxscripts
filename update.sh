@@ -19,7 +19,7 @@
 #
 #################################################################################################################
 #
-#                 AUTHOR      DATE          COMMENTS
+#    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
 #  VER 0.1.0      B3nd3r      2019/01/23    Initial creation and release.
 #
