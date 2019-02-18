@@ -21,6 +21,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 0.2.0      B3nder      2019/02/18    sent echo commands to /dev/null so it doesn't fill up the screen.
 #  VER 0.1.0      B3nd3r      2019/01/23    Initial creation and release.
 #
 #################################################################################################################
@@ -138,43 +139,43 @@ yumupdate() {
 #---------------------------------
         echo ""
         echo -e "$green" "$check" Updating Yum "$reset"
-        yes | sudo yum update -y | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum update | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #---------------------------------
 #       Install Updates
 #---------------------------------
         echo -e "$green" "$check" Installing Updates "$reset"
-        yes | sudo yum upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #---------------------------------
 #       Clean up unused pacakages
 #---------------------------------
         echo -e "$green" "$check" Cleaning Up Yum Packages "$reset"
-        yes | sudo yum clean packages | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum clean packages | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #---------------------------------
 #       Clean up Yum Metadata
 #---------------------------------
         echo -e "$green" "$check" Cleaning Up Yum Metadata "$reset"
-        yes | sudo yum clean metadata | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum clean metadata | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #---------------------------------
 #       Clean Yum DB Cache
 #---------------------------------
         echo -e "$green" "$check" Cleaning Up Yum DBCache "$reset"
-        yes | sudo yum clean dbcache | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum clean dbcache | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #---------------------------------
 #       Clean anything leftover
 #---------------------------------
         echo -e "$green" "$check" Cleaning up Yum Everything "$reset"
-        yes | sudo yum clean all | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo yum clean all | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #---------------------------------
 #       Remove /var/cache/yum file
 #---------------------------------
         echo -e "$green" "$check" Removing /var/cache/yum "$reset"
-        yes | sudo rm -rf /var/cache/yum | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo rm -rf /var/cache/yum | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
         echo ""
         echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
