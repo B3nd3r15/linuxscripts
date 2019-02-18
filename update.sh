@@ -264,25 +264,25 @@ aptupdate() {
 # Update all the repos.
 #---------------------------------
         echo -e "$green" "$check" Updating Repos "$reset"
-        yes | sudo apt-get update | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo apt-get update | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #---------------------------------
 # Upgrade all the things.
 #---------------------------------
         echo -e "$green" "$check" Upgrading System "$reset"
-        yes | sudo apt-get dist-upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes | sudo apt-get dist-upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #---------------------------------
 # Remove old software.
 #---------------------------------
         echo -e "$green" "$check" Removing Unused Software "$reset"
-        yes|sudo apt-get autoremove | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        yes|sudo apt-get autoremove | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #---------------------------------
 # Purge config files
 #---------------------------------
         echo -e "$green" "$check" Purging Leftover Config Files "$reset"
-        apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
         echo ""
         echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
@@ -318,7 +318,7 @@ aptupdate() {
         else
                 echo ""
                 echo -e "$yellow" "Installing NTP" "$reset"
-                yes | sudo apt-get install ntp ntpstat | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+                yes | sudo apt-get install ntp ntpstat | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
         fi
 
 #---------------------------------
