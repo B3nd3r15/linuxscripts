@@ -133,7 +133,8 @@ yumupdate() {
 #---------------------------------
         echo ""
         echo -e "$blue" "# Upgrading $osver on $(timestamp) #" "$reset"
-
+        echo ""
+        
 #---------------------------------
 #       Clean up unused pacakages
 #---------------------------------
