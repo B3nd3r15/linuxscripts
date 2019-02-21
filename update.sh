@@ -134,7 +134,7 @@ yumupdate() {
         echo ""
         echo -e "$blue" "# Upgrading $osver on $(timestamp) #" "$reset"
         echo ""
-        
+
 #---------------------------------
 #       Clean up unused pacakages
 #---------------------------------
@@ -274,10 +274,6 @@ aptupdate() {
         echo -e "$green" "$check" Purging Leftover Config Files "$reset"
         apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
-        echo ""
-        echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
-        echo ""
-
 #---------------------------------
 # Update all the repos.
 #---------------------------------
@@ -289,6 +285,10 @@ aptupdate() {
 #---------------------------------
         echo -e "$green" "$check" Upgrading System "$reset"
         yes | sudo apt-get dist-upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+        echo ""
+        echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
+        echo ""
 
 #---------------------------------
 # Ask user if they would like 
