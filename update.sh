@@ -135,19 +135,6 @@ yumupdate() {
         echo -e "$blue" "# Upgrading $osver on $(timestamp) #" "$reset"
 
 #---------------------------------
-#       Update Yum
-#---------------------------------
-        echo ""
-        echo -e "$green" "$check" Updating Yum "$reset"
-        yes | sudo yum update | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-
-#---------------------------------
-#       Install Updates
-#---------------------------------
-        echo -e "$green" "$check" Installing Updates "$reset"
-        yes | sudo yum upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-
-#---------------------------------
 #       Clean up unused pacakages
 #---------------------------------
         echo -e "$green" "$check" Cleaning Up Yum Packages "$reset"
@@ -176,6 +163,20 @@ yumupdate() {
 #---------------------------------
         echo -e "$green" "$check" Removing /var/cache/yum "$reset"
         yes | sudo rm -rf /var/cache/yum | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+#       Update Yum
+#---------------------------------
+        echo ""
+        echo -e "$green" "$check" Updating Yum "$reset"
+        yes | sudo yum update | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+#       Install Updates
+#---------------------------------
+        echo -e "$green" "$check" Installing Updates "$reset"
+        yes | sudo yum upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
 
         echo ""
         echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
@@ -261,18 +262,6 @@ aptupdate() {
         echo ""
 
 #---------------------------------
-# Update all the repos.
-#---------------------------------
-        echo -e "$green" "$check" Updating Repos "$reset"
-        yes | sudo apt-get update | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-
-#---------------------------------
-# Upgrade all the things.
-#---------------------------------
-        echo -e "$green" "$check" Upgrading System "$reset"
-        yes | sudo apt-get dist-upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-
-#---------------------------------
 # Remove old software.
 #---------------------------------
         echo -e "$green" "$check" Removing Unused Software "$reset"
@@ -287,6 +276,18 @@ aptupdate() {
         echo ""
         echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
         echo ""
+
+#---------------------------------
+# Update all the repos.
+#---------------------------------
+        echo -e "$green" "$check" Updating Repos "$reset"
+        yes | sudo apt-get update | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+# Upgrade all the things.
+#---------------------------------
+        echo -e "$green" "$check" Upgrading System "$reset"
+        yes | sudo apt-get dist-upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #---------------------------------
 # Ask user if they would like 
