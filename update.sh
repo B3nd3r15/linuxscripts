@@ -199,7 +199,7 @@ else
     echo ""
     echo -e "$yellow" "$check" Applying new configuration "$reset"
     #touch $SYSCTL_FILE
-    if ! grep -q "net.core.default_qdisc=fq" "$SYSCTL_FILE"; then | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    if ! grep -q "net.core.default_qdisc=fq" "$SYSCTL_FILE"; then
         echo "net.core.default_qdisc=fq" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
     fi
     if ! grep -q "net.ipv4.tcp_congestion_control=bbr" "$SYSCTL_FILE"; then | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
