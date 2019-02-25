@@ -204,7 +204,7 @@ else
 #---------------------------------
     if [[ x"${BBRSTATUS}" == x"bbr" ]]; then
         echo ""
-        echo -e "$green" "$check" TCP BBR setup is complete, Nothing further to do! "$reset"
+        echo -e "$green" "$check" Look at that! BBR is already set up, Go grab a beer! "$reset"
     else
         #-------------------------------------------------
         # apply new config
@@ -448,7 +448,7 @@ aptupdate() {
                 echo -e "$green" "$check" NTP config file already updated. "$reset"
         else
                 ntpconfig
-
+        fi
 #---------------------------------
 # Restart the NTP service.
 #---------------------------------
@@ -468,7 +468,6 @@ aptupdate() {
 #-------------------------------------------------
                 echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
                 sleep 5
-        fi
 
 #---------------------------------
 # Show NTP servers
