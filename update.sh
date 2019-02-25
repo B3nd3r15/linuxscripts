@@ -202,7 +202,7 @@ else
     if ! grep -q "net.core.default_qdisc=fq" "$SYSCTL_FILE"; then | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
         echo "net.core.default_qdisc=fq" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
     fi
-    if ! grep -q "net.ipv4.tcp_congestion_control=bbr" "$SYSCTL_FILE"; then
+    if ! grep -q "net.ipv4.tcp_congestion_control=bbr" "$SYSCTL_FILE"; then | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
         echo "net.ipv4.tcp_congestion_control=bbr" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
     fi
 
