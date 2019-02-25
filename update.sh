@@ -86,6 +86,12 @@ APT_GET_CMD=$(command -v apt-get)
 SERVICE=chronyd;
 
 #---------------------------------
+#       Clear the screen
+#---------------------------------
+clear 
+echo ""
+
+#---------------------------------
 # Timestamp function
 #---------------------------------
 timestamp()
@@ -94,10 +100,31 @@ timestamp()
 }
 
 #---------------------------------
-#       Clear the screen
+# check kernel version function
 #---------------------------------
-clear 
-echo ""
+kernelversion(){
+#--------------------------------------------------------
+# Check kernel version to make sure it is 4.9 or higher
+#--------------------------------------------------------
+ kernel_version=$(uname -r | awk 'BEGIN{ FS="."}; 
+    { if ($1 < 4) { print "N"; } 
+      else if ($1 == 4) { 
+          if ($2 < 9) { print "N"; } 
+          else { print "Y"; } 
+      } 
+      else { print "Y"; }
+    }')
+
+if [[ "$kernel_version" == 'N' ]]; then
+    current=$(uname -r)
+    echo "kernel required version is 4.9 your version is $current"
+else
+echo "enable tcp bbr"
+
+fi
+}
+
+
 
 ntpconfig() {
 
@@ -121,6 +148,68 @@ ntpconfig() {
                 sed -i "\$aserver time2.google.com iburst" /etc/ntp.conf
                 sed -i "\$aserver time3.google.com iburst" /etc/ntp.conf
                 sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
+}
+
+tcpbbr(){
+
+#-------------------------------------------------
+# sysctl file to create for config
+#-------------------------------------------------
+SYSCTL_FILE=/etc/sysctl.d/90-tcp-bbr.conf
+
+
+#--------------------------------------------------------
+# Check kernel version to make sure it is 4.9 or higher
+#--------------------------------------------------------
+ kernel_version=$(uname -r | awk 'BEGIN{ FS="."}; 
+    { if ($1 < 4) { print "N"; } 
+      else if ($1 == 4) { 
+          if ($2 < 9) { print "N"; } 
+          else { print "Y"; } 
+      } 
+      else { print "Y"; }
+    }')
+
+if [[ "$kernel_version" == 'N' ]]; then
+    current=$(uname -r)
+    echo "Kernel required version is 4.9 your version is $current"
+else
+    echo "You have the required version...Continuing!"
+
+    if grep -q "tcp_bbr" "/etc/modules-load.d/modules.conf"; then
+        echo "tcp_bbr" >> /etc/modules-load.d/modules.conf | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    fi
+
+#-------------------------------------------------
+# display current configuration
+#-------------------------------------------------
+    echo "Current configuration: "
+    sysctl net.ipv4.tcp_available_congestion_control | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    sysctl net.ipv4.tcp_congestion_control | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#-------------------------------------------------
+# apply new config
+#-------------------------------------------------
+    if ! grep -q "net.core.default_qdisc=fq" "$SYSCTL_FILE"; then
+        echo "net.core.default_qdisc=fq" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    fi
+    if ! grep -q "net.ipv4.tcp_congestion_control=bbr" "$SYSCTL_FILE"; then
+        echo "net.ipv4.tcp_congestion_control=bbr" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    fi
+
+#-------------------------------------------------
+# check if we can apply the config now
+#-------------------------------------------------
+    if lsmod | grep -q "tcp_bbr"; then
+        sysctl -p $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        echo "BBR is available now."
+    elif modprobe tcp_bbr; then
+        sysctl -p $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        echo "BBR is available now."
+    else
+        echo "BBR is not available now, Please reboot to enable BBR."
+    fi
+fi
 }
 
 #---------------------------------
@@ -372,9 +461,11 @@ aptupdate() {
 #--------------------------------------------------
 if [[ -n $YUM_CMD ]]; then
         yumupdate
+        tcpbbr
 
 elif [[ -n $APT_GET_CMD ]]; then
         aptupdate
+        tcpbbr
 
 #---------------------------------
 # If neither Yum or Apt are installed, exit and have user manually install updates on their system.
