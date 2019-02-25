@@ -150,13 +150,16 @@ ntpconfig() {
                 sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
 }
 
+
+#-------------------------------------------------
+# this function enables tcp bbr for conjestion
+#-------------------------------------------------
 tcpbbr(){
 
 #-------------------------------------------------
 # sysctl file to create for config
 #-------------------------------------------------
 SYSCTL_FILE=/etc/sysctl.d/90-tcp-bbr.conf
-
 
 #--------------------------------------------------------
 # Check kernel version to make sure it is 4.9 or higher
@@ -172,9 +175,11 @@ SYSCTL_FILE=/etc/sysctl.d/90-tcp-bbr.conf
 
 if [[ "$kernel_version" == 'N' ]]; then
     current=$(uname -r)
-    echo "Kernel required version is 4.9 your version is $current"
+    echo ""
+    echo -e "$red" "$check" Kernel required version is 4.9 your version is $current "$reset"
 else
-    echo "You have the required version...Continuing!"
+    echo ""
+    echo -e "$green" "$check" You have the required version...Continuing! "$reset"
 
     if grep -q "tcp_bbr" "/etc/modules-load.d/modules.conf"; then
         echo "tcp_bbr" >> /etc/modules-load.d/modules.conf | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
@@ -183,13 +188,16 @@ else
 #-------------------------------------------------
 # display current configuration
 #-------------------------------------------------
-    echo "Current configuration: "
+    echo ""
+    echo -e "$cyan" "$check" Current configuration: "$reset"
     sysctl net.ipv4.tcp_available_congestion_control | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
     sysctl net.ipv4.tcp_congestion_control | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #-------------------------------------------------
 # apply new config
 #-------------------------------------------------
+    echo ""
+    echo -e "$yellow" "$check" Applying new configuration "$reset"
     if ! grep -q "net.core.default_qdisc=fq" "$SYSCTL_FILE"; then
         echo "net.core.default_qdisc=fq" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
     fi
@@ -202,18 +210,19 @@ else
 #-------------------------------------------------
     if lsmod | grep -q "tcp_bbr"; then
         sysctl -p $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-        echo "BBR is available now."
+        echo ""
+        echo -e "$green" "$check" BBR is available now. "$reset"
     elif modprobe tcp_bbr; then
         sysctl -p $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-        echo "BBR is available now."
+        echo -e "$green" "$check" BBR is available now. "$reset"
     else
-        echo "BBR is not available now, Please reboot to enable BBR."
+        echo -e "$red" BBR is not available now, Please reboot to enable BBR. "$reset"
     fi
 fi
 }
 
 #---------------------------------
-#       Yum Function
+# Yum Function
 #---------------------------------
 yumupdate() {
 
