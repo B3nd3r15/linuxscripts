@@ -150,17 +150,22 @@ ntpconfig() {
                 sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
 }
 
-
 #-------------------------------------------------
 # this function enables TCP BBR congestion control
 #-------------------------------------------------
 tcpbbr(){
-
 #-------------------------------------------------
 # sysctl file to create for config
 #-------------------------------------------------
 SYSCTL_FILE=/etc/sysctl.d/10-tcp-bbr.conf
 BBRSTATUS=$(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}')
+
+#---------------------------------
+#       TCP BBR Config
+#---------------------------------
+        echo ""
+        echo -e "$blue" "# TCP BBR Started on $osver on $(timestamp) #" "$reset"
+        echo ""
 
 #--------------------------------------------------------
 # Check kernel version to make sure it is 4.9 or higher
@@ -177,10 +182,10 @@ BBRSTATUS=$(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}')
 if [[ "$kernel_version" == 'N' ]]; then
     current=$(uname -r)
     echo ""
-    echo -e "$red" "$check" Kernel required version is 4.9 your version is $current "$reset"
+    echo -e "$red" "$check" Kernel required version is 4.9 or higher, your version is $current "$reset"
 else
     echo ""
-    echo -e "$green" "$check" You have the required version...Continuing! "$reset"
+    echo -e "$green" "$check" Your kernel version is greater than 4.9, directly setting TCP BBR! "$reset"
 
     if grep -q "tcp_bbr" "/etc/modules-load.d/modules.conf"; then
         echo "tcp_bbr" >> /etc/modules-load.d/modules.conf | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
@@ -194,42 +199,49 @@ else
     sysctl net.ipv4.tcp_available_congestion_control
     sysctl net.ipv4.tcp_congestion_control
 
-
+#---------------------------------
+# Check BBR Status, if configured don't do anything, if not configure
+#---------------------------------
     if [[ x"${BBRSTATUS}" == x"bbr" ]]; then
-        echo "TCP BBR setup is complete, Nothing further to do!"
-    else
-        echo "There's work to be done!"
-    fi
-}
-
-
-#-------------------------------------------------
-# apply new config
-#-------------------------------------------------
-    echo ""
-    echo -e "$yellow" "$check" Applying new configuration "$reset"
-    #touch $SYSCTL_FILE
-    if ! grep -q "net.core.default_qdisc=fq" "$SYSCTL_FILE"; then
-        echo "net.core.default_qdisc=fq" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-    fi
-    if ! grep -q "net.ipv4.tcp_congestion_control=bbr" "$SYSCTL_FILE"; then
-        echo "net.ipv4.tcp_congestion_control=bbr" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-    fi
-
-#-------------------------------------------------
-# check if we can apply the config now
-#-------------------------------------------------
-    if lsmod | grep -q "tcp_bbr"; then
-        sysctl -p $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
         echo ""
-        echo -e "$green" "$check" BBR is available now. "$reset"
-    elif modprobe tcp_bbr; then
-        sysctl -p $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-        echo -e "$green" "$check" BBR is available now. "$reset"
+        echo -e "$green" "$check" TCP BBR setup is complete, Nothing further to do! "$reset"
     else
-        echo -e "$red" BBR is not available now, Please reboot to enable BBR. "$reset"
+        #-------------------------------------------------
+        # apply new config
+        #-------------------------------------------------
+        echo ""
+        echo -e "$yellow" "$check" Applying new configuration "$reset"
+        #touch $SYSCTL_FILE
+        if ! grep -q "net.core.default_qdisc=fq" "$SYSCTL_FILE"; then
+            echo "net.core.default_qdisc=fq" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        fi
+        if ! grep -q "net.ipv4.tcp_congestion_control=bbr" "$SYSCTL_FILE"; then
+            echo "net.ipv4.tcp_congestion_control=bbr" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        fi
+
+        #-------------------------------------------------
+        # check if we can apply the config now
+        #-------------------------------------------------
+        if lsmod | grep -q "tcp_bbr"; then
+            sysctl -p $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+            echo ""
+            echo -e "$green" "$check" BBR is available now. "$reset"
+        elif modprobe tcp_bbr; then
+            sysctl -p $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+            echo -e "$green" "$check" BBR is available now. "$reset"
+        else
+            echo -e "$red" BBR is not available now, Please reboot to enable BBR. "$reset"
+        fi
     fi
+
 fi
+
+#---------------------------------
+# End of TCP BBR Config
+#---------------------------------
+        echo ""
+        echo -e "$blue" "# TCP BBR Complete on $osver on $(timestamp) #" "$reset"
+        echo ""
 }
 
 #---------------------------------
