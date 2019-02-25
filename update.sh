@@ -190,15 +190,16 @@ else
 #-------------------------------------------------
     echo ""
     echo -e "$cyan" "$check" Current configuration: "$reset"
-    sysctl net.ipv4.tcp_available_congestion_control | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-    sysctl net.ipv4.tcp_congestion_control | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    sysctl net.ipv4.tcp_available_congestion_control
+    sysctl net.ipv4.tcp_congestion_control
 
 #-------------------------------------------------
 # apply new config
 #-------------------------------------------------
     echo ""
     echo -e "$yellow" "$check" Applying new configuration "$reset"
-    if ! grep -q "net.core.default_qdisc=fq" "$SYSCTL_FILE"; then
+    #touch $SYSCTL_FILE
+    if ! grep -q "net.core.default_qdisc=fq" "$SYSCTL_FILE"; then | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
         echo "net.core.default_qdisc=fq" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
     fi
     if ! grep -q "net.ipv4.tcp_congestion_control=bbr" "$SYSCTL_FILE"; then
