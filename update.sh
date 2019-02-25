@@ -152,14 +152,15 @@ ntpconfig() {
 
 
 #-------------------------------------------------
-# this function enables tcp bbr for conjestion
+# this function enables TCP BBR congestion control
 #-------------------------------------------------
 tcpbbr(){
 
 #-------------------------------------------------
 # sysctl file to create for config
 #-------------------------------------------------
-SYSCTL_FILE=/etc/sysctl.d/90-tcp-bbr.conf
+SYSCTL_FILE=/etc/sysctl.d/10-tcp-bbr.conf
+BBRSTATUS=$(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}')
 
 #--------------------------------------------------------
 # Check kernel version to make sure it is 4.9 or higher
@@ -193,6 +194,15 @@ else
     sysctl net.ipv4.tcp_available_congestion_control
     sysctl net.ipv4.tcp_congestion_control
 
+
+    if [[ x"${BBRSTATUS}" == x"bbr" ]]; then
+        echo "it is there"
+    else
+        echo "it's not there"
+    fi
+}
+
+
 #-------------------------------------------------
 # apply new config
 #-------------------------------------------------
@@ -202,7 +212,7 @@ else
     if ! grep -q "net.core.default_qdisc=fq" "$SYSCTL_FILE"; then
         echo "net.core.default_qdisc=fq" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
     fi
-    if ! grep -q "net.ipv4.tcp_congestion_control=bbr" "$SYSCTL_FILE"; then | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    if ! grep -q "net.ipv4.tcp_congestion_control=bbr" "$SYSCTL_FILE"; then
         echo "net.ipv4.tcp_congestion_control=bbr" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
     fi
 
@@ -344,9 +354,6 @@ yumupdate() {
         ntpstat
         echo ""
 
-        echo ""
-        echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
-        echo ""
 }
 
 #---------------------------------
@@ -461,9 +468,6 @@ aptupdate() {
         ntpstat
         echo ""
 
-        echo ""
-        echo -e "$cyan" "To view the log file: [ less $LOG_LOCATION/${scriptname}.log ]" "$reset"
-        echo ""
 }
 
 #--------------------------------------------------
