@@ -196,9 +196,9 @@ else
 
 
     if [[ x"${BBRSTATUS}" == x"bbr" ]]; then
-        echo "it is there"
+        echo "TCP BBR setup is complete, Nothing further to do!"
     else
-        echo "it's not there"
+        echo "There's work to be done!"
     fi
 }
 
