@@ -473,9 +473,17 @@ if [[ -n $YUM_CMD ]]; then
         yumupdate
         tcpbbr
 
+        echo ""
+        echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
+        echo ""
+
 elif [[ -n $APT_GET_CMD ]]; then
         aptupdate
         tcpbbr
+
+        echo ""
+        echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
+        echo ""
 
 #---------------------------------
 # If neither Yum or Apt are installed, exit and have user manually install updates on their system.
