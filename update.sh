@@ -21,6 +21,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 0.4.0      B3nd3r      2019/02/27    sent do-release-upgrade to /dev/null and added extra space in output for NTP.
 #  VER 0.3.0      B3nd3r      2019/02/25    Created TCPBBR function to configure tcp to use bbr congestion control.
 #  VER 0.2.0      B3nd3r      2019/02/18    sent echo commands to /dev/null so it doesn't fill up the screen.
 #  VER 0.1.0      B3nd3r      2019/01/23    Initial creation and release.
