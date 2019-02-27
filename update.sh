@@ -419,7 +419,7 @@ aptupdate() {
 # Ask user if they would like
 # to check for new LTS release.
 #---------------------------------
-        if do-release-upgrade -c; then
+        if do-release-upgrade -c >> /dev/null; then
                 echo ""
                 read -r -t 10 -p "Would you like to install the new LTS release?  " -e -i 'N' input
                 yesno=${input:-n}
@@ -431,7 +431,7 @@ aptupdate() {
                 esac
         else
                 echo ""
-                echo -e "$green" "No action taken." "$reset"
+                echo -e "$green" "No new LTS release available or no action taken." "$reset"
         fi
 
 #----------------------------------------------
@@ -475,6 +475,7 @@ aptupdate() {
 #----------------------------------------------------------------
 # Give ntp service time to start up and talk to time*.google.com.
 #----------------------------------------------------------------
+                echo ""
                 echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
                 sleep 5
 
