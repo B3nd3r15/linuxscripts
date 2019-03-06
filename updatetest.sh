@@ -39,7 +39,7 @@ getRepeatedString()
   resultString=""
 
   #loop for number of repetitions
-  for i in {2..${2}}; do
+  for i in {2..71; do
     #append string to result string
     resultString="${resultString}${1}"
   done
@@ -108,7 +108,7 @@ SERVICE=chronyd;
 #---------------------------------
 # Set line hash separator.
 #---------------------------------
-LINEHASHSEPARATOR=$(getRepeatedString "=" 10)
+LINEHASHSEPARATOR=$(getRepeatedString "=" 71)
 }
 
 #---------------------------------
@@ -289,7 +289,6 @@ yumupdate() {
 #---------------------------------
 # Clean up unused pacakages.
 #---------------------------------
-        echo ""
         echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Cleaning Up Yum Packages "$reset"
         yes | sudo yum clean packages | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
@@ -298,7 +297,6 @@ yumupdate() {
 #---------------------------------
 # Clean up Yum Metadata.
 #---------------------------------
-        echo ""
         echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Cleaning Up Yum Metadata "$reset"
         yes | sudo yum clean metadata | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
@@ -307,52 +305,66 @@ yumupdate() {
 #---------------------------------
 # Clean Yum DB Cache.
 #---------------------------------
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Cleaning Up Yum DBCache "$reset"
         yes | sudo yum clean dbcache | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-
+        echo "${LINEHASHSEPARATOR}"
+        echo ""
 #---------------------------------
 # Clean anything leftover.
 #---------------------------------
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Cleaning up Yum Everything "$reset"
         yes | sudo yum clean all | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-
+        echo "${LINEHASHSEPARATOR}"
+        echo ""
 #---------------------------------
 # Remove /var/cache/yum file.
 #---------------------------------
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Removing /var/cache/yum "$reset"
         yes | sudo rm -rf /var/cache/yum | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-
+        echo "${LINEHASHSEPARATOR}"
+        echo ""
 #---------------------------------
 # Update Yum.
 #---------------------------------
-        echo ""
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Updating Yum "$reset"
         yes | sudo yum update | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-
+        echo "${LINEHASHSEPARATOR}"
+        echo ""
 #---------------------------------
 # Install Updates.
 #---------------------------------
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Installing Updates "$reset"
         yes | sudo yum upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-
+        echo "${LINEHASHSEPARATOR}"
+        echo ""
 #---------------------------------
 # End of update section.
 #---------------------------------
-        echo ""
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
+        echo "${LINEHASHSEPARATOR}"
         echo ""
 
 #----------------------------------
 # Start disable of Chronyd Service.
 #----------------------------------
         if P=$(pgrep $SERVICE); then
+                 echo "${LINEHASHSEPARATOR}"
                  echo -e "$red" "$SERVICE" is running, PID is "$P", Disabling chronyd service. "$reset"
+                 echo "${LINEHASHSEPARATOR}"
                 # Stop the Chronyd Service
                 systemctl stop chronyd
                 # Disable chronyd so it cannot start if server reboots.
                 systemctl disable chronyd
         else
+                echo "${LINEHASHSEPARATOR}"
                 echo -e "$green" "$check" "$SERVICE" is not running or has been disabled. "$reset"
+                echo "${LINEHASHSEPARATOR}"
         fi
 
 #--------------------------------------------------------------------------------------
@@ -361,24 +373,36 @@ yumupdate() {
 #-------------------------------------------------------------------------------------
         if yum list installed | grep ntp.x86_64 > /dev/null 2>&1; then
                 echo ""
+                echo "${LINEHASHSEPARATOR}"
                 echo -e "$green" "$check" NTP Successfully Installed "$reset"
+                echo "${LINEHASHSEPARATOR}"
         else
+                echo ""
+                echo "${LINEHASHSEPARATOR}"
                 echo -e "$yellow" "$check" Installing NTP "$reset"
                 yes | sudo yum install ntp ntpd | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+                echo "${LINEHASHSEPARATOR}"
         fi
 
 #-------------------------------------------------
 # Checks to see if the config files need updated.
 #-------------------------------------------------
         if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
+                echo ""
+                echo "${LINEHASHSEPARATOR}"
                 echo -e "$green" "$check" NTP conf file already updated. "$reset"
+                echo "${LINEHASHSEPARATOR}"
         else
                 ntpconfig
 
 #-----------------------------------------------------
 # Restart, enable, and show the status of the service.
 #-----------------------------------------------------
+                echo ""
+                echo "${LINEHASHSEPARATOR}"
                 echo -e "$green" "$check" Restarting NTP Service "$reset"
+                echo "${LINEHASHSEPARATOR}"
+
                 sudo systemctl stop ntpd
                 sleep 2
                 sudo systemctl start ntpd
@@ -390,14 +414,20 @@ yumupdate() {
 #-----------------------------------------------------------------
 # Give ntp service time to start up and talk to time*.google.com.
 #-----------------------------------------------------------------
+        echo ""
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
+        echo "${LINEHASHSEPARATOR}"
         sleep 5
 
         fi
 #-------------------------------------------------
 # Show NTP servers.
 #-------------------------------------------------
+        echo ""
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Showing current NTP Servers "$reset"
+        echo "${LINEHASHSEPARATOR}"
         echo ""
         ntpq -p
         echo ""
@@ -420,32 +450,46 @@ aptupdate() {
 #---------------------------------
 # Remove old software.
 #---------------------------------
+        echo ""
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Removing Unused Software "$reset"
         yes|sudo apt-get autoremove | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        echo "${LINEHASHSEPARATOR}"
 
 #---------------------------------
 # Purge config files.
 #---------------------------------
+        echo ""
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Purging Leftover Config Files "$reset"
         apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        echo "${LINEHASHSEPARATOR}"
 
 #---------------------------------
 # Update all the repos.
 #---------------------------------
+        echo ""
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Updating Repos "$reset"
         yes | sudo apt-get update | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        echo "${LINEHASHSEPARATOR}"
 
 #---------------------------------
 # Upgrade all the things.
 #---------------------------------
+        echo ""
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Upgrading System "$reset"
         yes | sudo apt-get dist-upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        echo "${LINEHASHSEPARATOR}"
 
 #---------------------------------
 # End of update section.
 #---------------------------------
         echo ""
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
+        echo "${LINEHASHSEPARATOR}"
         echo ""
 
 #---------------------------------
@@ -454,8 +498,10 @@ aptupdate() {
 #---------------------------------
         if do-release-upgrade -c >> /dev/null; then
                 echo ""
+                echo "${LINEHASHSEPARATOR}"
                 read -r -t 10 -p "Would you like to install the new LTS release?  " -e -i 'N' input
                 yesno=${input:-n}
+                echo "${LINEHASHSEPARATOR}"
                 echo ""
         case $yesno in
                 [Yy]* ) do-release-upgrade;;
@@ -464,7 +510,9 @@ aptupdate() {
                 esac
         else
                 echo ""
+                echo "${LINEHASHSEPARATOR}"
                 echo -e "$green" "No new LTS release available or no action taken." "$reset"
+                echo "${LINEHASHSEPARATOR}"
         fi
 
 #----------------------------------------------
@@ -475,10 +523,14 @@ aptupdate() {
 
         if apt-get -qq install ntp ntpstat; then
                 echo ""
+                echo "${LINEHASHSEPARATOR}"
                 echo -e "$green" "$check" "NTP Successfully Installed" "$reset"
+                echo "${LINEHASHSEPARATOR}"
         else
                 echo ""
+                echo "${LINEHASHSEPARATOR}"
                 echo -e "$yellow" "Installing NTP" "$reset"
+                echo "${LINEHASHSEPARATOR}"
                 yes | sudo apt-get install ntp ntpstat | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
         fi
 
@@ -495,7 +547,9 @@ aptupdate() {
 # Restart the NTP service.
 #---------------------------------
                 echo ""
+                echo "${LINEHASHSEPARATOR}"
                 echo -e "$green" "$check" Restarting NTP Service "$reset"
+                echo "${LINEHASHSEPARATOR}"
                 echo ""
                 sudo systemctl stop ntp
                 sleep 2
@@ -509,13 +563,17 @@ aptupdate() {
 # Give ntp service time to start up and talk to time*.google.com.
 #----------------------------------------------------------------
                 echo ""
+                echo "${LINEHASHSEPARATOR}"
                 echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
+                echo "${LINEHASHSEPARATOR}"
                 sleep 5
 
 #---------------------------------
 # Show NTP servers.
 #---------------------------------
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" "Showing current NTP Servers" "$reset"
+        echo "${LINEHASHSEPARATOR}"
         echo ""
         ntpq -p
         echo ""
@@ -539,7 +597,9 @@ if [[ -n ${YUM_CMD} ]]; then
         tcpbbr
 
         echo ""
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
+        echo "${LINEHASHSEPARATOR}"
         echo ""
 
 elif [[ -n $APT_GET_CMD ]]; then
@@ -547,14 +607,18 @@ elif [[ -n $APT_GET_CMD ]]; then
         tcpbbr
 
         echo ""
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
+        echo "${LINEHASHSEPARATOR}"
         echo ""
 
 #-----------------------------------------------------------------------------------------------------
 # If neither Yum or Apt are installed, exit and have user manually install updates on their system.
 #-----------------------------------------------------------------------------------------------------
 else
+        echo "${LINEHASHSEPARATOR}"
         echo "Cannot determine installed packaging system, Please manually update."
+        echo "${LINEHASHSEPARATOR}"
         exit 1;
 fi
 
