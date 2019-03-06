@@ -1,112 +1,106 @@
-  #!/bin/bash
+#!/bin/bash
 
-###################################################################
-# Script Name: updatetest.sh
+#################################################################################################################
 #
-# Date Created: 2018-10-01
+#       NAME: update.sh
 #
-# Description: Testing self update
+#       AUTHOR:  B3nd3r
 #
-# Args: N/A
+#       SUPPORT:  None
 #
-# Author:B3nd3r15
-# Email:
+#       DESCRIPTION:  Update Linux Server,enable TCP BBR, and set NTP servers.
 #
-# License: GPL-3.0  
-# https://github.com/B3nd3r15/linuxscripts/blob/master/LICENSE
-###################################################################
+#       License: GPL-3.0
+#       https://github.com/B3nd3r15/linuxscripts/blob/master/LICENSE
+#
+#################################################################################################################
+#
+#       ASSUMPTIONS: Script is run manually, target server has access to internet.
+#
+#################################################################################################################
+#
+#    Version      AUTHOR      DATE          COMMENTS
+#                 ------      ----          --------
+#  VER 0.4.0      B3nd3r      2019/02/27    sent do-release-upgrade to /dev/null and added extra space in output for NTP.
+#  VER 0.3.0      B3nd3r      2019/02/25    Created TCPBBR function to configure tcp to use bbr congestion control.
+#  VER 0.2.0      B3nd3r      2019/02/18    sent echo commands to /dev/null so it doesn't fill up the screen.
+#  VER 0.1.0      B3nd3r      2019/01/23    Initial creation and release.
+#
+#################################################################################################################
 
-set -fb
 
-readonly THISDIR=$(cd "$(dirname "$0")" ; pwd)
-readonly MY_NAME=$(basename "$0")
-readonly FILE_TO_FETCH_URL="https://raw.githubusercontent.com/B3nd3r15/linuxscripts/master/update.sh"
-readonly EXISTING_SHELL_SCRIPT="${THISDIR}/updatetest.sh"
-readonly EXECUTABLE_SHELL_SCRIPT="${THISDIR}/.updatetest.sh"
+#--------------------------
+# Global Variables.
+#--------------------------
 
-function get_remote_file() {
-  readonly REQUEST_URL=$1
-  readonly OUTPUT_FILENAME=$2
-  readonly TEMP_FILE="${THISDIR}/tmp.file"
-  if [ -n "$(which wget)" ]; then
-    $(wget -O "${TEMP_FILE}"  "$REQUEST_URL" 2>&1)
-    if [[ $? -eq 0 ]]; then
-      mv "${TEMP_FILE}" "${OUTPUT_FILENAME}"
-      chmod 755 "${OUTPUT_FILENAME}"
-    else
-      return 1
-    fi
-  fi
-}
-#function clean_up() {
-  # clean up code (if required) that has to execute every time here
-#}
-function self_clean_up() {
-  rm -f "${EXECUTABLE_SHELL_SCRIPT}"
-}
+setscriptvariables(){
+#-----------------------------------------------
+# Pulls the script name without directory paths.
+#-----------------------------------------------
+scriptname="$(basename "${0}")"
 
-function update_self_and_invoke() {
-  get_remote_file "${FILE_TO_FETCH_URL}" "${EXECUTABLE_SHELL_SCRIPT}"
-  if [ $? -ne 0 ]; then
-    cp "${EXISTING_SHELL_SCRIPT}" "${EXECUTABLE_SHELL_SCRIPT}"
-  fi
-  exec "${EXECUTABLE_SHELL_SCRIPT}" "$@"
-}
-function main() {
-  cp "${EXECUTABLE_SHELL_SCRIPT}" "${EXISTING_SHELL_SCRIPT}"
-  #!/bin/bash
+#---------------------------------
+# Run as Root.
+#---------------------------------
+if (( EUID != 0 )); then
+        sudo /home/"$USER"/"$scriptname"
+        exit
+fi
 
-###################################################################
-# Script Name: update.sh
-#
-# Date Created: 2018-09-01
-#
-# Description: script to detect which package manger you are using
-# install updates, cleans up old pacakges, installs ntp if needed,
-# configure ntp with google time servers, and check for new LTS 
-# releases if applicable. 
-#
-# Args: N/A
-#
-# Author:B3nd3r15
-# Email:
-#
-# License: GPL-3.0  
-# https://github.com/B3nd3r15/linuxscripts/blob/master/LICENSE
-###################################################################
-
+#---------------------------------
+# Set log Location.
+#---------------------------------
+LOG_LOCATION=/var/log
+exec > >(tee -ai $LOG_LOCATION/"${scriptname}".log )
+exec 2>&1
+echo ""
 
 #----------------------------------
-#   VARIABLES
+# Bash Colors.
 #----------------------------------
+reset="\033[0m"
+red="\033[0;31m"          # Red
+green="\033[0;32m"        # Green
+yellow="\033[0;33m"       # Yellow
+blue="\033[0;34m"         # Blue
+cyan="\033[0;36m"         # Cyan
+#white="\033[0;37m"        # White
+check="\xE2\x9C\x94"      # Check Mark
 
 #---------------------------------
-# Pulls the script name without directory paths
-#---------------------------------
-scriptname=`echo $(basename ${0})`
-
-#---------------------------------
-# Sets the current date/time
-#---------------------------------
-date=`date +"%Y%m%d_%H%M%S"`
-
-#---------------------------------
-# Gets OS Version
+# Gets OS Version.
 #---------------------------------
 osver=$(lsb_release -ds 2>/dev/null || cat /etc/*release 2>/dev/null | head -n1 || uname -om)
 
 #---------------------------------
-# Gets Yum version
+# Gets Yum version.
 #---------------------------------
-YUM_CMD=$(which yum)
+YUM_CMD=$(command -v yum)
 
 #---------------------------------
-# Gets Apt version
+# Gets Apt version.
 #---------------------------------
-APT_GET_CMD=$(which apt-get)
+APT_GET_CMD=$(command -v apt-get)
 
 #---------------------------------
-# Timestamp function
+# Chronyd service.
+#---------------------------------
+SERVICE=chronyd;
+
+#---------------------------------
+# Set line hash separator.
+#---------------------------------
+LINEHASHSEPARATOR=$(getRepeatedString "=" 110)
+}
+
+#---------------------------------
+# Clear the screen.
+#---------------------------------
+clear 
+echo ""
+
+#---------------------------------
+# Timestamp function.
 #---------------------------------
 timestamp()
 {
@@ -114,389 +108,427 @@ timestamp()
 }
 
 #---------------------------------
-# Run as Root
+# Check kernel version function.
 #---------------------------------
+kernelversion(){
+#--------------------------------------------------------
+# Check kernel version to make sure it is 4.9 or higher.
+#--------------------------------------------------------
+KERNEL_VERSION=$(uname -r | awk 'BEGIN{ FS="."}; 
+    { if ($1 < 4) { print "N"; } 
+      else if ($1 == 4) { 
+          if ($2 < 9) { print "N"; } 
+          else { print "Y"; } 
+      } 
+      else { print "Y"; }
+    }')
 
-if (( $EUID != 0 )); then
-    sudo /home/$USER/$scriptname
-        exit
+if [[ "$KERNEL_VERSION" == 'N' ]]; then
+    current=$(uname -r)
+    echo "Kernel required version is 4.9 your version is $current"
+else
+echo "Enable TCP BBR"
+
+fi
+}
+
+ntpconfig() {
+#------------------------------------------------------------------------------------
+# The config files for ntp lies in /etc/ntp.conf
+# We are changing the Servers time to google's public NTP servers.
+# Look here for more info : https://developers.google.com/time/guides#linux_ntpd
+#-----------------------------------------------------------------------------------
+                echo -e "$yellow" "$check" Modifying NTP config file "$reset"
+
+#-------------------------------------------------
+# Comment out the default pool servers.
+#-------------------------------------------------
+                sed -i 's/pool/#&/' /etc/ntp.conf
+                sed -i 's/server/#&/' /etc/ntp.conf
+
+#-------------------------------------------------
+# Add the new servers to the end of the file.
+#-------------------------------------------------
+                sed -i "\$aserver time1.google.com iburst" /etc/ntp.conf
+                sed -i "\$aserver time2.google.com iburst" /etc/ntp.conf
+                sed -i "\$aserver time3.google.com iburst" /etc/ntp.conf
+                sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
+}
+
+#--------------------------------------------------
+# This function enables TCP BBR congestion control.
+#--------------------------------------------------
+tcpbbr(){
+#-------------------------------------------------
+# Sysctl file to create for config.
+#-------------------------------------------------
+SYSCTL_FILE=/etc/sysctl.d/10-tcp-bbr.conf
+
+#-------------------------------------------------
+# Variable to check for current BBR Status.
+#-------------------------------------------------
+BBRSTATUS=$(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}')
+
+#---------------------------------
+# TCP BBR Config.
+#---------------------------------
+        echo ""
+        echo -e "$blue" "# TCP BBR Started on $osver on $(timestamp) #" "$reset"
+        echo ""
+
+#--------------------------------------------------------
+# Check kernel version to make sure it is 4.9 or higher.
+#--------------------------------------------------------
+ KERNEL_VERSION=$(uname -r | awk 'BEGIN{ FS="."}; 
+    { if ($1 < 4) { print "N"; } 
+      else if ($1 == 4) { 
+          if ($2 < 9) { print "N"; } 
+          else { print "Y"; } 
+      } 
+      else { print "Y"; }
+    }')
+
+if [[ "$KERNEL_VERSION" == 'N' ]]; then
+    current=$(uname -r)
+    echo ""
+    echo -e "$red" "$check" Kernel required version is 4.9 or higher, your version is $current "$reset"
+else
+    echo ""
+    echo -e "$green" "$check" Your kernel version is greater than 4.9, directly setting TCP BBR! "$reset"
+
+    if grep -q "tcp_bbr" "/etc/modules-load.d/modules.conf"; then
+        echo "tcp_bbr" >> /etc/modules-load.d/modules.conf | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    fi
+
+#-------------------------------------------------
+# Display current configuration.
+#-------------------------------------------------
+    echo ""
+    echo -e "$cyan" "$check" Current configuration: "$reset"
+    sysctl net.ipv4.tcp_available_congestion_control
+    sysctl net.ipv4.tcp_congestion_control
+
+#----------------------------------------------------------------------
+# Check BBR Status, if configured don't do anything, if not configure.
+#----------------------------------------------------------------------
+    if [[ x"${BBRSTATUS}" == x"bbr" ]]; then
+        echo ""
+        echo -e "$green" "$check" Look at that! BBR is already set up, Go grab a beer! "$reset"
+    else
+
+#-------------------------------------------------
+# Apply new config.
+#-------------------------------------------------
+        echo ""
+        echo -e "$yellow" "$check" Applying new configuration "$reset"
+        #touch $SYSCTL_FILE
+        if ! grep -q "net.core.default_qdisc=fq" "$SYSCTL_FILE"; then
+            echo "net.core.default_qdisc=fq" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        fi
+        if ! grep -q "net.ipv4.tcp_congestion_control=bbr" "$SYSCTL_FILE"; then
+            echo "net.ipv4.tcp_congestion_control=bbr" >> $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        fi
+
+#-------------------------------------------------
+# Check if we can apply the config now.
+#-------------------------------------------------
+        if lsmod | grep -q "tcp_bbr"; then
+            sysctl -p $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+            echo ""
+            echo -e "$green" "$check" BBR is available now. "$reset"
+        elif modprobe tcp_bbr; then
+            sysctl -p $SYSCTL_FILE | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+            echo -e "$green" "$check" BBR is available now. "$reset"
+        else
+            echo -e "$red" BBR is not available now, Please reboot to enable BBR. "$reset"
+        fi
+    fi
+
 fi
 
 #---------------------------------
-# Clear the screen
+# End of TCP BBR Config.
 #---------------------------------
-clear 
-echo ""
+        echo ""
+        echo -e "$blue" "# TCP BBR Complete on $osver on $(timestamp) #" "$reset"
+        echo ""
+}
 
 #---------------------------------
-# Set log Location
+# Yum Function.
 #---------------------------------
-LOG_LOCATION=/var/log
-exec > >(tee -ai $LOG_LOCATION/${scriptname}.log )
-exec 2>&1
-echo ""
-echo "Log Location should be: [ $LOG_LOCATION ]"
-echo ""
+yumupdate() {
+
+#---------------------------------
+# Update all the things!
+#---------------------------------
+        echo ""
+        echo "${lineHashSeparator}"
+        echo -e "$blue" "# Upgrading $osver on $(timestamp) #" "$reset"
+        echo "${lineHashSeparator}"
+        echo ""
+
+#---------------------------------
+# Clean up unused pacakages.
+#---------------------------------
+        echo ""
+        echo "${lineHashSeparator}"
+        echo -e "$green" "$check" Cleaning Up Yum Packages "$reset"
+        yes | sudo yum clean packages | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        echo "${lineHashSeparator}"
+        echo ""
+#---------------------------------
+# Clean up Yum Metadata.
+#---------------------------------
+        echo ""
+        echo "${lineHashSeparator}"
+        echo -e "$green" "$check" Cleaning Up Yum Metadata "$reset"
+        yes | sudo yum clean metadata | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        echo "${lineHashSeparator}"
+        echo ""
+#---------------------------------
+# Clean Yum DB Cache.
+#---------------------------------
+        echo -e "$green" "$check" Cleaning Up Yum DBCache "$reset"
+        yes | sudo yum clean dbcache | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+# Clean anything leftover.
+#---------------------------------
+        echo -e "$green" "$check" Cleaning up Yum Everything "$reset"
+        yes | sudo yum clean all | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+# Remove /var/cache/yum file.
+#---------------------------------
+        echo -e "$green" "$check" Removing /var/cache/yum "$reset"
+        yes | sudo rm -rf /var/cache/yum | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+# Update Yum.
+#---------------------------------
+        echo ""
+        echo -e "$green" "$check" Updating Yum "$reset"
+        yes | sudo yum update | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+# Install Updates.
+#---------------------------------
+        echo -e "$green" "$check" Installing Updates "$reset"
+        yes | sudo yum upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+# End of update section.
+#---------------------------------
+        echo ""
+        echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
+        echo ""
+
+#----------------------------------
+# Start disable of Chronyd Service.
+#----------------------------------
+        if P=$(pgrep $SERVICE); then
+                 echo -e "$red" "$SERVICE" is running, PID is "$P", Disabling chronyd service. "$reset"
+                # Stop the Chronyd Service
+                systemctl stop chronyd
+                # Disable chronyd so it cannot start if server reboots.
+                systemctl disable chronyd
+        else
+                echo -e "$green" "$check" "$SERVICE" is not running or has been disabled. "$reset"
+        fi
+
+#--------------------------------------------------------------------------------------
+# Checks to see if NTP is installed. If it is, continues to check if the config file
+# is modified if not it will install it and update the config file.
+#-------------------------------------------------------------------------------------
+        if yum list installed | grep ntp.x86_64 > /dev/null 2>&1; then
+                echo ""
+                echo -e "$green" "$check" NTP Successfully Installed "$reset"
+        else
+                echo -e "$yellow" "$check" Installing NTP "$reset"
+                yes | sudo yum install ntp ntpd | sudo tee -a $LOG_LOCATION/"${scriptname}".log
+        fi
+
+#-------------------------------------------------
+# Checks to see if the config files need updated.
+#-------------------------------------------------
+        if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
+                echo -e "$green" "$check" NTP conf file already updated. "$reset"
+        else
+                ntpconfig
+
+#-----------------------------------------------------
+# Restart, enable, and show the status of the service.
+#-----------------------------------------------------
+                echo -e "$green" "$check" Restarting NTP Service "$reset"
+                sudo systemctl stop ntpd
+                sleep 2
+                sudo systemctl start ntpd
+                sleep 2
+                sudo systemctl enable ntpd
+                sleep 2
+                sudo systemctl status ntpd
+
+#-----------------------------------------------------------------
+# Give ntp service time to start up and talk to time*.google.com.
+#-----------------------------------------------------------------
+        echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
+        sleep 5
+
+        fi
+#-------------------------------------------------
+# Show NTP servers.
+#-------------------------------------------------
+        echo -e "$green" "$check" Showing current NTP Servers "$reset"
+        echo ""
+        ntpq -p
+        echo ""
+        ntpstat
+        echo ""
+}
+
+#---------------------------------
+# Apt Function.
+#---------------------------------
+aptupdate() {
+
+#---------------------------------
+# Update all the things!
+#---------------------------------
+        echo ""
+        echo -e "$blue" "# Upgrading $osver on $(timestamp) #" "$reset"
+        echo ""
+
+#---------------------------------
+# Remove old software.
+#---------------------------------
+        echo -e "$green" "$check" Removing Unused Software "$reset"
+        yes|sudo apt-get autoremove | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+# Purge config files.
+#---------------------------------
+        echo -e "$green" "$check" Purging Leftover Config Files "$reset"
+        apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+# Update all the repos.
+#---------------------------------
+        echo -e "$green" "$check" Updating Repos "$reset"
+        yes | sudo apt-get update | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+# Upgrade all the things.
+#---------------------------------
+        echo -e "$green" "$check" Upgrading System "$reset"
+        yes | sudo apt-get dist-upgrade | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+#---------------------------------
+# End of update section.
+#---------------------------------
+        echo ""
+        echo -e "$blue" "# End of Upgrade on $(timestamp) #" "$reset"
+        echo ""
+
+#---------------------------------
+# Ask user if they would like
+# to check for new LTS release.
+#---------------------------------
+        if do-release-upgrade -c >> /dev/null; then
+                echo ""
+                read -r -t 10 -p "Would you like to install the new LTS release?  " -e -i 'N' input
+                yesno=${input:-n}
+                echo ""
+        case $yesno in
+                [Yy]* ) do-release-upgrade;;
+                [Nn]* ) echo -e "$yellow" "Skipping Upgrade" "$reset";;
+                * ) echo -e "$yellow" "Invalid option, Skipping Upgrade" "$reset";;
+                esac
+        else
+                echo ""
+                echo -e "$green" "No new LTS release available or no action taken." "$reset"
+        fi
+
+#----------------------------------------------
+# Checks to see if NTP is installed.
+# If it is, continues to modify config file,
+# if not it will install it.
+#----------------------------------------------
+
+        if apt-get -qq install ntp ntpstat; then
+                echo ""
+                echo -e "$green" "$check" "NTP Successfully Installed" "$reset"
+        else
+                echo ""
+                echo -e "$yellow" "Installing NTP" "$reset"
+                yes | sudo apt-get install ntp ntpstat | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        fi
+
+#---------------------------------
+# Checks to see if the config files need updated.
+#---------------------------------
+        if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
+                echo -e "$green" "$check" NTP config file already updated. "$reset"
+        else
+                ntpconfig
+        fi
+
+#---------------------------------
+# Restart the NTP service.
+#---------------------------------
+                echo ""
+                echo -e "$green" "$check" Restarting NTP Service "$reset"
+                echo ""
+                sudo systemctl stop ntp
+                sleep 2
+                sudo systemctl start ntp
+                sleep 2
+                sudo systemctl enable ntp
+                sleep 2
+                sudo systemctl status ntp
+
+#----------------------------------------------------------------
+# Give ntp service time to start up and talk to time*.google.com.
+#----------------------------------------------------------------
+                echo ""
+                echo -e "$yellow" "$check" Waiting for NTP service to start "$reset"
+                sleep 5
+
+#---------------------------------
+# Show NTP servers.
+#---------------------------------
+        echo -e "$green" "$check" "Showing current NTP Servers" "$reset"
+        echo ""
+        ntpq -p
+        echo ""
+        ntpstat
+        echo ""
+
+}
 
 #--------------------------------------------------
-# Determine Installed packaging system
+# Determine Installed packaging system.
 #--------------------------------------------------
-if [[ ! -z $YUM_CMD ]]; then
+if [[ -n $YUM_CMD ]]; then
+        yumupdate
+        tcpbbr
 
-
-    #---------------------------------
-    # Update
-    #---------------------------------
-    echo "" 
-    echo "################################################################################" 
-    echo "# Upgrading $osver on $(timestamp) #" 
-    echo "################################################################################" 
-    echo "" 
-    
-    #---------------------------------
-    # Update Yum
-    #---------------------------------
-    echo ""
-    echo -e "\xE2\x9C\x94" Updating Yum
-    echo ""
-    yes | sudo yum update -y | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    echo ""
-    
-    #---------------------------------
-    # Install Updates
-    #---------------------------------
-    echo ""
-    echo -e "\xE2\x9C\x94" Installing Updates
-    echo ""
-    yes | sudo yum upgrade | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    echo ""
-
-    #---------------------------------
-    # Clean up unused pacakages
-    #---------------------------------
-    echo ""
-    echo -e "\xE2\x9C\x94" Cleaning Up Yum Packages
-    echo ""
-    yes | sudo yum clean packages | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    echo ""
-
-    #---------------------------------
-    # Clean up Yum Metadata
-    #---------------------------------
-    echo ""
-    echo -e "\xE2\x9C\x94" Cleaning Up Yum Metadata
-    echo ""
-    yes | sudo yum clean metadata | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    echo ""
-
-    #---------------------------------
-    # Clean Yum DB Cache
-    #---------------------------------
-    echo ""
-    echo -e "\xE2\x9C\x94" Cleaning Up Yum DBCache
-    echo ""
-    yes | sudo yum clean dbcache | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    echo ""
-
-    #---------------------------------
-    # Clean anything leftover
-    #---------------------------------
-    echo ""
-    echo -e "\xE2\x9C\x94" Cleaning up Yum Everything
-    echo ""
-    yes | sudo yum clean all | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    echo ""
-
-    #---------------------------------
-    # Remove /var/cache/yum file
-    #---------------------------------
-    echo ""
-    echo -e "\xE2\x9C\x94" Removing /var/cache/yum
-    yes | sudo rm -rf /var/cache/yum | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    echo ""
-
-    echo "" 
-    echo "################################################################################" 
-    echo "# End of Upgrade on $(timestamp) #" 
-    echo "################################################################################" 
-    echo "" 
-
-    echo ""
-      echo "################################################################################"
-      echo "# Configuring NTP on $(timestamp) #"
-      echo "################################################################################"
-      echo ""
-
-      #-------------------------------------------------------------------------------------
-    # Checks to see if NTP is installed. If it is, continues to check if the config file
-      # is modified if not it will install it and update the config file
-    #-------------------------------------------------------------------------------------
-      if yum list installed | grep ntp.x86_64 > /dev/null 2>&1 | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"; then
         echo ""
-        echo -e "\xE2\x9C\x94" NTP Successfully Installed | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    else
-      echo ""
-        echo -e "\xE2\x9C\x94" Installing NTP
-        yes | sudo yum install ntp | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    fi  
-
-    #-------------------------------------------------
-    # Checks to see if the config files need updated
-    #-------------------------------------------------
-    if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
-      echo ""
-      echo -e "\xE2\x9C\x94" NTP conf file already updated. | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    else
-      echo ""
-      echo -e "\xE2\x9C\x94" Updating NTP conf file | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-  
-
-    #-----------------------------------------------------------------------------------
-    # The config files for ntp lies in /etc/ntp.conf
-    # We are changing the Servers time to google's public NTP servers
-    # Look here for more info : https://developers.google.com/time/guides#linux_ntpd
-    #-----------------------------------------------------------------------------------
-      echo "" 
-      echo -e "\xE2\x9C\x94" Modifying NTP config file | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-      
-      #-------------------------------------------------
-      # Comment out the default pool servers.
-      #-------------------------------------------------
-      sed -i 's/pool/#&/' /etc/ntp.conf
-      sed -i 's/server/#&/' /etc/ntp.conf
-    
-      #-------------------------------------------------
-      # Add the new servers to the end of the file.
-      #-------------------------------------------------
-      sed -i "\$aserver time1.google.com iburst" /etc/ntp.conf
-      sed -i "\$aserver time2.google.com iburst" /etc/ntp.conf
-      sed -i "\$aserver time3.google.com iburst" /etc/ntp.conf
-      sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
-      
-      #-------------------------------------------------
-      # Restart, enable, and show the status of the service
-      #-------------------------------------------------
-      echo "" 
-      echo -e "\xE2\x9C\x94" Restarting NTP Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-      sudo systemctl stop ntpd
-      sleep 2
-      sudo systemctl start ntpd
-      sleep 2
-      sudo systemctl enable ntpd
-      sleep 2
-      sudo systemctl status ntpd
-    fi
-
-    #-------------------------------------------------
-    # Give ntp service time to start up and talk to time*.google.com
-    #-------------------------------------------------
-    sleep 5
-    echo ""
-    echo -e "\xE2\x9C\x94" Waiting for NTP service to start | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-
-    #-------------------------------------------------
-    # Show NTP servers
-    #-------------------------------------------------
-    echo "" 
-    echo -e "\xE2\x9C\x94" Showing current NTP Servers | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    echo ""
-    ntpq -p
-    echo ""
-    ntpstat
-    echo ""
-
-    echo ""
-      echo "################################################################################"
-      echo "# Completed NTP Configuration on $(timestamp) #"
-      echo "################################################################################"
-      echo ""
-
-elif [[ ! -z $APT_GET_CMD ]]; then
-
-    #---------------------------------
-      # Update all the things!
-    #---------------------------------
-    echo ""
-      echo "################################################################################"
-      echo "# Upgrading $osver on $(timestamp) #"
-      echo "################################################################################"
-      echo ""
-
-      #---------------------------------
-      # Update all the repos.
-    #---------------------------------
-      echo ""
-      echo -e "\xE2\x9C\x94" Updating Repos 
-      echo ""
-      yes | sudo apt-get update | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-      echo ""
-
-      #---------------------------------
-      # Upgrade all the things.
-    #---------------------------------
-    echo ""
-    echo -e "\xE2\x9C\x94" Upgrading System 
-    echo ""
-    yes | sudo apt-get dist-upgrade | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-      echo ""
-
-      #---------------------------------
-      # Remove old software.
-    #---------------------------------
-      echo ""
-    echo -e "\xE2\x9C\x94" Removing Unused Software
-    echo ""
-    yes|sudo apt-get autoremove | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-      echo ""
-
-      #---------------------------------
-      # Purge config files
-    #---------------------------------
-      echo ""
-    echo -e "\xE2\x9C\x94" Purging Leftover Config Files 
-    echo ""
-    apt-get purge -y $(dpkg -l | awk '/^rc/ { print $2 }') | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-      echo ""
-
-      echo ""
-      echo "################################################################################"
-      echo "# End of Upgrade on $(timestamp) #"
-      echo "################################################################################"
-      echo "" 
-
-      echo ""
-      echo "################################################################################"
-      echo "# Checking for new LTS release on $(timestamp) #"
-      echo "################################################################################"
-      echo ""
-
-      #---------------------------------
-    # Ask user if they would like to
-    # check for new LTS release
-    #---------------------------------
-    if do-release-upgrade -c; then 
+        echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
         echo ""
-        read -p "Would you like to install the new LTS release? " yn
-         case $yn in
-           [Yy]* ) do-release-upgrade; break;;
-         [Nn]* ) ;;
-             * ) echo "Please answer yes or no.";;
-      esac
-    else
-      echo ""
-        echo "No action taken."
-    fi
 
-    echo ""
-      echo "################################################################################"
-      echo "# Completed Checking for LTS release on $(timestamp) #"
-      echo "################################################################################"
-      echo ""
+elif [[ -n $APT_GET_CMD ]]; then
+        aptupdate
+        tcpbbr
 
-      echo ""
-      echo "################################################################################"
-      echo "# Configuring NTP on $(timestamp) #"
-      echo "################################################################################"
-      echo ""
-
-      #---------------------------------
-      # Checks to see if NTP is installed. If it is, continues to modify config file.
-      # if not it will install it. 
-    #---------------------------------
-      if apt-get -qq install ntp ntpstat; then 
         echo ""
-        echo -e "\xE2\x9C\x94" NTP Successfully Installed | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    else
-      echo ""
-        yes | sudo apt-get install ntp ntpstat | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    fi  
+        echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
+        echo ""
 
-    #---------------------------------
-    # Checks to see if the config files need updated
-    #---------------------------------
-    if grep google.com /etc/ntp.conf > /dev/null 2>&1; then
-      echo ""
-      echo -e "\xE2\x9C\x94" NTP config file already updated. | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    else
-
-    #---------------------------------
-    # The config files for ntp lies in /etc/ntp.conf
-    # We are changing the Servers time to google's public NTP servers
-    # Look here for more info : https://developers.google.com/time/guides#linux_ntpd
-    #---------------------------------
-      echo "" 
-      echo -e "\xE2\x9C\x94" Modifying NTP config file | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-  
-    #---------------------------------
-    # Comment out the default pool servers.
-    #---------------------------------
-      sed -i 's/pool/#&/' /etc/ntp.conf
-      sed -i 's/server/#&/' /etc/ntp.conf
-    
-    #---------------------------------
-    # Add the new servers to the end of the file. 
-    #---------------------------------
-      sed -i "\$aserver time1.google.com iburst" /etc/ntp.conf
-      sed -i "\$aserver time2.google.com iburst" /etc/ntp.conf
-      sed -i "\$aserver time3.google.com iburst" /etc/ntp.conf
-      sed -i "\$aserver time4.google.com iburst" /etc/ntp.conf
-      
-    #---------------------------------
-    # Restart the NTP service.
-    #---------------------------------
-      echo "" 
-      echo -e "\xE2\x9C\x94" Restarting NTP Service | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-      echo ""
-      sudo systemctl stop ntp
-      sleep 2
-      sudo systemctl start ntp
-      sleep 2
-      sudo systemctl enable ntp
-      sleep 2
-      sudo systemctl status ntp
-
-    #---------------------------------
-    # Sleep 5 seconds to give the service time to start and talk to the servers
-    #---------------------------------
-      echo ""
-      echo -e "\xE2\x9C\x94" Waiting for NTP service to start | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-      sleep 5
-    fi
-    
-    #---------------------------------
-    # Show NTP servers
-    #---------------------------------
-    echo "" 
-    echo -e "\xE2\x9C\x94" Showing current NTP Servers | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-    echo ""
-    ntpq -p 
-    echo ""
-    ntpstat
-    echo ""
-
-    echo ""
-      echo "################################################################################"
-      echo "# Completed NTP Configuration on $(timestamp) #"
-      echo "################################################################################"
-      echo ""
-
-      echo "this script has been updated!"
-
-#---------------------------------
+#-----------------------------------------------------------------------------------------------------
 # If neither Yum or Apt are installed, exit and have user manually install updates on their system.
-#---------------------------------
+#-----------------------------------------------------------------------------------------------------
 else
-  echo "Cannot determine installed packaging system, Please manually update." | sed "s/$/ [$(date +"%Y-%m-%d %T")]/"
-  exit 1; 
-fi
-} 
-
-if [[ $MY_NAME = \.* ]]; then
-  # invoke real main program
-  trap "clean_up; self_clean_up" EXIT
-  main "$@"
-else
-  # update myself and invoke updated version
-  trap clean_up EXIT
-  update_self_and_invoke "$@"
+        echo "Cannot determine installed packaging system, Please manually update."
+        exit 1;
 fi
