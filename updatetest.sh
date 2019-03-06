@@ -28,11 +28,29 @@
 #
 #################################################################################################################
 
+#---------------------------------------------------------------------------
+# Get a string equal to the given string repeated the given number of times
+# $1 = String to repeat
+# $2 = Number of repetitions
+#---------------------------------------------------------------------------
+getRepeatedString()
+{
+  #initialize result string
+  resultString=""
+
+  #loop for number of repetitions
+  for i in {1..${2}}; do
+    #append string to result string
+    resultString="${resultString}${1}"
+  done
+
+  #return result string
+  echo ${resultString}
+}
 
 #--------------------------
 # Global Variables.
 #--------------------------
-
 setscriptvariables(){
 #-----------------------------------------------
 # Pulls the script name without directory paths.
@@ -506,11 +524,17 @@ aptupdate() {
 
 }
 
+main(){
+
+#--------------------------------------------------
+# Set Sript Variables.
+#--------------------------------------------------
+setscriptvariables
+
 #--------------------------------------------------
 # Determine Installed packaging system.
 #--------------------------------------------------
-if [[ -n $YUM_CMD ]]; then
-        setscriptvariables
+if [[ -n ${YUM_CMD} ]]; then
         yumupdate
         tcpbbr
 
@@ -519,7 +543,6 @@ if [[ -n $YUM_CMD ]]; then
         echo ""
 
 elif [[ -n $APT_GET_CMD ]]; then
-        setscriptvariables
         aptupdate
         tcpbbr
 
@@ -534,3 +557,8 @@ else
         echo "Cannot determine installed packaging system, Please manually update."
         exit 1;
 fi
+
+}
+
+#call main function
+main "${@}"
