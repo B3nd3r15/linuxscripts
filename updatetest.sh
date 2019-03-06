@@ -510,6 +510,7 @@ aptupdate() {
 # Determine Installed packaging system.
 #--------------------------------------------------
 if [[ -n $YUM_CMD ]]; then
+        setscriptvariables
         yumupdate
         tcpbbr
 
@@ -518,6 +519,7 @@ if [[ -n $YUM_CMD ]]; then
         echo ""
 
 elif [[ -n $APT_GET_CMD ]]; then
+        setscriptvariables
         aptupdate
         tcpbbr
 
