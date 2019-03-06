@@ -39,7 +39,7 @@ getRepeatedString()
   resultString=""
 
   #loop for number of repetitions
-  for i in {1..${2}}; do
+  for i in {2..${2}}; do
     #append string to result string
     resultString="${resultString}${1}"
   done
