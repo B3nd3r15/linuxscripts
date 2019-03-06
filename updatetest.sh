@@ -108,7 +108,7 @@ SERVICE=chronyd;
 #---------------------------------
 # Set line hash separator.
 #---------------------------------
-LINEHASHSEPARATOR=$(getRepeatedString "=" 110)
+LINEHASHSEPARATOR=$(getRepeatedString "=" 10)
 }
 
 #---------------------------------
@@ -281,28 +281,28 @@ yumupdate() {
 # Update all the things!
 #---------------------------------
         echo ""
-        echo "${lineHashSeparator}"
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$blue" "# Upgrading $osver on $(timestamp) #" "$reset"
-        echo "${lineHashSeparator}"
+        echo "${LINEHASHSEPARATOR}"
         echo ""
 
 #---------------------------------
 # Clean up unused pacakages.
 #---------------------------------
         echo ""
-        echo "${lineHashSeparator}"
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Cleaning Up Yum Packages "$reset"
         yes | sudo yum clean packages | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-        echo "${lineHashSeparator}"
+        echo "${LINEHASHSEPARATOR}"
         echo ""
 #---------------------------------
 # Clean up Yum Metadata.
 #---------------------------------
         echo ""
-        echo "${lineHashSeparator}"
+        echo "${LINEHASHSEPARATOR}"
         echo -e "$green" "$check" Cleaning Up Yum Metadata "$reset"
         yes | sudo yum clean metadata | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
-        echo "${lineHashSeparator}"
+        echo "${LINEHASHSEPARATOR}"
         echo ""
 #---------------------------------
 # Clean Yum DB Cache.
