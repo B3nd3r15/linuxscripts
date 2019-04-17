@@ -36,7 +36,7 @@
 getRepeatedString()
 {
   #initialize result string
-  resultString="="
+  resultString=""
 
   #loop for number of repetitions
   for i in {2..71; do
