@@ -50,12 +50,12 @@ fi
 #---------------------------------
 # Set log Location.
 #---------------------------------
-LOG_LOCATION=/var/log
-exec > >(tee -ai $LOG_LOCATION/"${scriptname}".log )
-exec 2>&1
-echo ""
+#LOG_LOCATION=/var/log
+#exec > >(tee -ai $LOG_LOCATION/"${scriptname}".log )
+#exec 2>&1
+#echo ""
 
-historyfile=/var/log/"${scriptname}".log
+historyfile=/var/log/"${scriptname}"test.log
 
 #---------------------------------
 # Set log Location.
