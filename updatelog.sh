@@ -61,8 +61,8 @@ historyfile=/var/log/"${scriptname}".log
 # Set log Location.
 #---------------------------------
 logthis() {
-    printf %q "$(date): $@" >> "$historyfile"
-    "$@" 2>&1 >> "$historyfile"
+    echo "$(date):$(printf ' %q' "$@")" >> "$historyfile"
+    #"$@" 2>&1 >> "$historyfile"
 }
 
 #----------------------------------
