@@ -515,7 +515,7 @@ if [[ -n $YUM_CMD ]]; then
 
 elif [[ -n $APT_GET_CMD ]]; then
        logthis aptupdate
-        tcpbbr
+       logthis tcpbbr
 
         echo ""
         echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
