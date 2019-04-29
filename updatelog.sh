@@ -62,7 +62,7 @@ historyfile=/var/log/"${scriptname}".log
 #---------------------------------
 logthis() {
     echo "$(date):$(printf ' %q' "$@")" >> "$historyfile"
-    #"$@" 2>&1 >> "$historyfile"
+    "$@" 2>> "$historyfile"
 }
 
 #----------------------------------
