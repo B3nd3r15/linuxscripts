@@ -17,10 +17,24 @@
 #
 #       ASSUMPTIONS: Script is run manually, target server has access to internet.
 #
+#       INSTALL LOCATION: put file in /usr/bin then run chmod +x update
+#
+#################################################################################################################
+#
+#       Commands:
+#           timestamp
+#           kernelversion
+#           ntpconfig
+#           tcpbbr
+#           yumupdate
+#           aptupdate
+#           automatic
+#
 #################################################################################################################
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 0.6.0      B3nd3r      2019/06/20    Added commands section,changed filename to serverupdate and automatic function to do all the things.
 #  VER 0.5.0      B3nd3r      2019/06/20    Added line at the bottom of script to call functions directly from cmd line.
 #  VER 0.4.0      B3nd3r      2019/02/27    sent do-release-upgrade to /dev/null and added extra space in output for NTP.
 #  VER 0.3.0      B3nd3r      2019/02/25    Created TCPBBR function to configure tcp to use bbr congestion control.
@@ -89,6 +103,11 @@ APT_GET_CMD=$(command -v apt-get)
 SERVICE=chronyd;
 
 #---------------------------------
+# Currnet kernel version.
+#---------------------------------
+current=$(uname -r)
+
+#---------------------------------
 # Clear the screen.
 #---------------------------------
 clear 
@@ -122,7 +141,7 @@ if [[ "$KERNEL_VERSION" == 'N' ]]; then
     current=$(uname -r)
     echo "Kernel required version is 4.9 your version is $current"
 else
-echo "Enable TCP BBR"
+echo "You can enable TCP BBR. Your running kernel version is $(current)"
 
 fi
 }
@@ -191,7 +210,7 @@ else
     echo ""
     echo -e "$green" "$check" Your kernel version is greater than 4.9, directly setting TCP BBR! "$reset"
 
-    if grep -q "tcp_bbr" "/etc/modules-load.d/modules.conf"; then
+    if ! grep -q "tcp_bbr" "/etc/modules-load.d/modules.conf"; then
         echo "tcp_bbr" >> /etc/modules-load.d/modules.conf | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
     fi
 
@@ -493,6 +512,7 @@ aptupdate() {
 
 }
 
+automatic(){
 #--------------------------------------------------
 # Determine Installed packaging system.
 #--------------------------------------------------
@@ -519,6 +539,7 @@ else
         echo "Cannot determine installed packaging system, Please manually update."
         exit 1;
 fi
+}
 
 # The "$@" that follows this line is intentional and exists to allow you to call functions within the script from a command line.
 "$@"
