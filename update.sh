@@ -528,3 +528,6 @@ else
         echo "Cannot determine installed packaging system, Please manually update."
         exit 1;
 fi
+
+# The "$@" that follows this line is intentional and exists to allow you to call functions within the script from a command line.
+"$@"
