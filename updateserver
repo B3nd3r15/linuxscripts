@@ -56,12 +56,13 @@ scriptname="$(basename "${0}")"
 #---------------------------------
 # Run as Root.
 #---------------------------------
-
-if (( EUID != 0 )); then
-        sudo /home/"$USER"/"$scriptname"
-        exit
+#if (( EUID != 0 )); then
+#        sudo /home/"$USER"/"$scriptname"
+#        exit
+#fi
+if [ "$(id -u)" != "0" ]; then
+  exec sudo "$0" "$@" 
 fi
-
 #---------------------------------
 # Set log Location.
 #---------------------------------
