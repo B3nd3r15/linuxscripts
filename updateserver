@@ -34,6 +34,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 0.7.0      B3nd3r      2019/06/20    Added space to output of kernelversion function.
 #  VER 0.6.0      B3nd3r      2019/06/20    Added commands section,changed filename to updateserver and automatic function to do all the things.
 #  VER 0.5.0      B3nd3r      2019/06/20    Added line at the bottom of script to call functions directly from cmd line.
 #  VER 0.4.0      B3nd3r      2019/02/27    sent do-release-upgrade to /dev/null and added extra space in output for NTP.
@@ -143,6 +144,7 @@ if [[ "$KERNEL_VERSION" == 'N' ]]; then
     echo "Kernel required version is 4.9 your version is $current"
 else
 echo "You can enable TCP BBR. Your running kernel version is $current"
+echo ""
 
 fi
 }
