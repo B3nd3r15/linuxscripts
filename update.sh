@@ -21,6 +21,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 0.5.0      B3nd3r      2019/06/20    Added line at the bottom of script to call functions directly from cmd line.
 #  VER 0.4.0      B3nd3r      2019/02/27    sent do-release-upgrade to /dev/null and added extra space in output for NTP.
 #  VER 0.3.0      B3nd3r      2019/02/25    Created TCPBBR function to configure tcp to use bbr congestion control.
 #  VER 0.2.0      B3nd3r      2019/02/18    sent echo commands to /dev/null so it doesn't fill up the screen.
@@ -518,3 +519,6 @@ else
         echo "Cannot determine installed packaging system, Please manually update."
         exit 1;
 fi
+
+# The "$@" that follows this line is intentional and exists to allow you to call functions within the script from a command line.
+"$@"
