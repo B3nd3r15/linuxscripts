@@ -142,7 +142,7 @@ if [[ "$KERNEL_VERSION" == 'N' ]]; then
     current=$(uname -r)
     echo "Kernel required version is 4.9 your version is $current"
 else
-echo "You can enable TCP BBR. Your running kernel version is $(current)"
+echo "You can enable TCP BBR. Your running kernel version is $current"
 
 fi
 }
