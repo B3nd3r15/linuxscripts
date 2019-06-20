@@ -34,6 +34,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 0.9.0      B3nd3r      2019/06/20    Updated aptupdate function - change purge config files command, commented old command for backup.
 #  VER 0.8.0      B3nd3r      2019/06/20    Updated run as root command.
 #  VER 0.7.0      B3nd3r      2019/06/20    Added space to output of kernelversion function.
 #  VER 0.6.0      B3nd3r      2019/06/20    Added commands section,changed filename to updateserver and automatic function to do all the things.
@@ -419,7 +420,8 @@ aptupdate() {
 # Purge config files.
 #---------------------------------
         echo -e "$green" "$check" Purging Leftover Config Files "$reset"
-        apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        #sudo dpkg --purge $(COLUMNS=200 dpkg -l | grep "^rc" | tr -s ' ' | cut -d ' ' -f 2) | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        sudo apt-get purge -y "$(dpkg -l | awk '/^rc/ { print $2 }')" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
 #---------------------------------
 # Update all the repos.
