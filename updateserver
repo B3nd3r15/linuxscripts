@@ -572,7 +572,7 @@ curl "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$updat
 #    else
 #    exec env /bin/sh "$0" "${commandline}" "-s" "-second_pass" "-fail_output" "$fail_output"
 #    fi
-    exit 0
+#    exit 0
 
 }
 
