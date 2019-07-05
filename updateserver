@@ -551,10 +551,10 @@ verbose_mode=0
 
 
 echo -e "$green" "$check" "Updating Myself" "$reset"
-curl -j "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$updateserver_tmp"; check_download=$(echo $?); 
+curl -j "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$updateserver_tmp"; check_download=$(echo $?); | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
     if [ "$check_download" -eq "1" ]; then
         # Branch path must be wrong or a bad curl occurred, try against our master repo 
-        curl -j "$branch_path_master/updateserver" -o "$updateserver_tmp"; grep -q version "$updateserver_tmp"; check_download=$(echo $?); 
+        curl -j "$branch_path_master/updateserver" -o "$updateserver_tmp"; grep -q version "$updateserver_tmp"; check_download=$(echo $?); | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
         clear
         if [ "$check_download" -eq "1" ]; then
             # We tried twice to get the script but failed, time to bail out
