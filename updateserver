@@ -52,6 +52,11 @@
 #--------------------------
 
 #-----------------------------------------------
+# Script Version for updating.
+#-----------------------------------------------
+version=1.0.0
+
+#-----------------------------------------------
 # Pulls the script name without directory paths.
 #-----------------------------------------------
 scriptname="$(basename "${0}")"
@@ -116,6 +121,17 @@ current=$(uname -r)
 #---------------------------------
 clear 
 echo ""
+
+#---------------------------------
+# The items needed for validating downloads
+#---------------------------------
+branch_path=https://raw.githubusercontent.com/B3nd3r15/linuxscripts/master
+branch_path_master=https://raw.githubusercontent.com/B3nd3r15/linuxscripts/master
+check_download=
+updateserver_tmp=/tmp/updateserver.$$
+failure_info=
+fail_output=
+verbose_mode=0
 
 #---------------------------------
 # Timestamp function.
@@ -518,21 +534,66 @@ aptupdate() {
 
 }
 
+autoupdate(){
+
+# The items needed for validating downloads
+branch_path=https://raw.githubusercontent.com/B3nd3r15/linuxscripts/master
+branch_path_master=https://raw.githubusercontent.com/B3nd3r15/linuxscripts/master
+check_download=
+updateserver_tmp=/tmp/updateserver.$$
+failure_info=
+fail_output=
+verbose_mode=0
+
+
+curl "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$updateserver_tmp"; check_download=$(echo $?);
+    if [ "$check_download" -eq "1" ]; then
+        # Branch path must be wrong or a bad curl occurred, try against our master repo 
+        curl "$branch_path_master/updateserver" -o "$updateserver_tmp"; grep -q version "$updateserver_tmp"; check_download=$(echo $?);
+        if [ "$check_download" -eq "1" ]; then
+            # We tried twice to get the script but failed, time to bail out
+            CLEAN_UP
+            exit 0
+        else
+            fail_output="${fail_output}1"
+        fi
+    else
+        fail_output="${fail_output}0"
+    fi
+
+    # If we made it here, it means that we successfully downloaded all the scripts.
+    mv "$updateserver_tmp" /usr/bin/updateserver; chmod +x /usr/bin/updateserver;
+    [[ ${verboseverbose_mode} -eq "1" ]] && echo "COMMANDLINE: ${commandline}"
+    if [ -z "$commandline" ]
+    then
+    exec env /bin/sh "$0" "-s" "-second_pass" "-fail_output" "$fail_output"
+    else
+    exec env /bin/sh "$0" "${commandline}" "-s" "-second_pass" "-fail_output" "$fail_output"
+    fi
+    exit 0
+fi
+
+}
+
 automatic(){
 #--------------------------------------------------
 # Determine Installed packaging system.
 #--------------------------------------------------
 if [[ -n $YUM_CMD ]]; then
+        autoupdate
         yumupdate
         tcpbbr
+        cleanup
 
         echo ""
         echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
         echo ""
 
 elif [[ -n $APT_GET_CMD ]]; then
+        autoupdate
         aptupdate
         tcpbbr
+        cleanup
 
         echo ""
         echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
@@ -545,6 +606,12 @@ else
         echo "Cannot determine installed packaging system, Please manually update."
         exit 1;
 fi
+}
+
+# Anything that needs to be removed at the end of the program needs to be here
+cleanup () {
+#[[ -e "$combined_uptime" ]] && rm "$combined_uptime"
+[[ -e "$updateserver_tmp" ]] && rm "$updateserver_tmp"
 }
 
 # The "$@" that follows this line is intentional and exists to allow you to call functions within the script from a command line.
