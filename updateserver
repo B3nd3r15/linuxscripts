@@ -35,6 +35,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 1.0.5      B3nd3r      2019/07/05    fixed echo output verbage.
 #  VER 1.0.4      B3nd3r      2019/07/05    added logging to cleanup function and version #.
 #  VER 1.0.3      B3nd3r      2019/07/05    updated log typo and version #.
 #  VER 1.0.2      B3nd3r      2019/07/05    updated curl command to use curl -j and version #.
@@ -60,7 +61,7 @@
 #-----------------------------------------------
 # Script Version for updating.
 #-----------------------------------------------
-version=1.0.4
+version=1.0.5
 
 #-----------------------------------------------
 # Pulls the script name without directory paths.
@@ -552,7 +553,7 @@ fail_output=
 verbose_mode=0
 
 
-echo -e "$yellow" "$check" "Updating myself" "$reset"
+echo -e "$yellow" "$check" "# Updating Myself on $(timestamp) #" "$reset"
 echo ""
 curl -j "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$updateserver_tmp"; check_download=$(echo $?);
     if [ "$check_download" -eq "1" ]; then
@@ -572,7 +573,7 @@ curl -j "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$up
 # If we made it here, it means that we successfully downloaded all the scripts.
     mv "$updateserver_tmp" /usr/bin/updateserver; chmod +x /usr/bin/updateserver | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
     echo ""
-    echo -e "$green" "$check" "Update complete" "$reset"
+    echo -e "$green" "$check" "# Update Complete on $(timestamp) #" "$reset"
     echo ""
 #    [[ ${verboseverbose_mode} -eq "1" ]] && echo "COMMANDLINE: ${commandline}"
 #    if [ -z "$commandline" ]
