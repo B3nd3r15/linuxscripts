@@ -29,11 +29,13 @@
 #           yumupdate
 #           aptupdate
 #           automatic
+#           autoupdate
 #
 #################################################################################################################
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 1.0.2      B3nd3r      2019/07/05    updated curl command to use curl -j and version #.
 #  VER 1.0.1      B3nd3r      2019/07/05    Fixed typo in autoupdate function.
 #  VER 1.0.0      B3nd3r      2019/07/05    Added autoupdate function to keep script updated from github master repo.
 #  VER 0.9.0      B3nd3r      2019/06/20    Updated aptupdate function - change purge config files command, commented old command for backup.
@@ -56,7 +58,7 @@
 #-----------------------------------------------
 # Script Version for updating.
 #-----------------------------------------------
-version=1.0.1
+version=1.0.2
 
 #-----------------------------------------------
 # Pulls the script name without directory paths.
