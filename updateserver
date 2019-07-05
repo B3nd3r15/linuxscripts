@@ -35,6 +35,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 1.0.4      B3nd3r      2019/07/05    added logging to cleanup function and version #.
 #  VER 1.0.3      B3nd3r      2019/07/05    updated log typo and version #.
 #  VER 1.0.2      B3nd3r      2019/07/05    updated curl command to use curl -j and version #.
 #  VER 1.0.1      B3nd3r      2019/07/05    Fixed typo in autoupdate function.
@@ -59,7 +60,7 @@
 #-----------------------------------------------
 # Script Version for updating.
 #-----------------------------------------------
-version=1.0.3
+version=1.0.4
 
 #-----------------------------------------------
 # Pulls the script name without directory paths.
@@ -617,7 +618,7 @@ fi
 # Anything that needs to be removed at the end of the program needs to be here
 cleanup () {
 #[[ -e "$combined_uptime" ]] && rm "$combined_uptime"
-[[ -e "$updateserver_tmp" ]] && rm "$updateserver_tmp"
+[[ -e "$updateserver_tmp" ]] && rm "$updateserver_tmp" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 }
 
 # The "$@" that follows this line is intentional and exists to allow you to call functions within the script from a command line.
