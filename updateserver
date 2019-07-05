@@ -552,12 +552,12 @@ fail_output=
 verbose_mode=0
 
 
-echo -e "$green" "$check" "Updating Myself" "$reset"
+echo -e "$green" "$check" "Updating Myself" "$reset" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+echo ""
 curl -j "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$updateserver_tmp"; check_download=$(echo $?);
     if [ "$check_download" -eq "1" ]; then
         # Branch path must be wrong or a bad curl occurred, try against our master repo 
         curl -j "$branch_path_master/updateserver" -o "$updateserver_tmp"; grep -q version "$updateserver_tmp"; check_download=$(echo $?) ;
-        clear
         if [ "$check_download" -eq "1" ]; then
             # We tried twice to get the script but failed, time to bail out
             CLEAN_UP
@@ -571,6 +571,7 @@ curl -j "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$up
 
 # If we made it here, it means that we successfully downloaded all the scripts.
     mv "$updateserver_tmp" /usr/bin/updateserver; chmod +x /usr/bin/updateserver | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    clear
 #    [[ ${verboseverbose_mode} -eq "1" ]] && echo "COMMANDLINE: ${commandline}"
 #    if [ -z "$commandline" ]
 #    then
