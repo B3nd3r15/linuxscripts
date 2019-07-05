@@ -34,7 +34,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
-#  VER 1.0.1      B3nd3r      2019/07/05    
+#  VER 1.0.1      B3nd3r      2019/07/05    Fixed typo in autoupdate function.
 #  VER 1.0.0      B3nd3r      2019/07/05    Added autoupdate function to keep script updated from github master repo.
 #  VER 0.9.0      B3nd3r      2019/06/20    Updated aptupdate function - change purge config files command, commented old command for backup.
 #  VER 0.8.0      B3nd3r      2019/06/20    Updated run as root command.
@@ -564,7 +564,7 @@ curl "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$updat
     fi
 
     # If we made it here, it means that we successfully downloaded all the scripts.
-    cp -p "$updateserver_tmp" /usr/bin/updateserver; chmod +x /usr/bin/updateserver;
+    mv "$updateserver_tmp" /usr/bin/updateserver; chmod +x /usr/bin/updateserver;
 #    [[ ${verboseverbose_mode} -eq "1" ]] && echo "COMMANDLINE: ${commandline}"
 #    if [ -z "$commandline" ]
 #    then
