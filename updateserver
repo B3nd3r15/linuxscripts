@@ -658,7 +658,20 @@ cleanup () {
 
  if [ "$#" -eq  "0" ]
    then
-     echo "No commands passed. Please give me a command."
+     echo "No commands passed. Please give me a command.
+     
+     updateserver [commands]
+
+    Commands:
+        help               Show this menu.
+        timestamp          Shows a timestamp (used in other functions).
+        kernelversion      Show the current systems kernel version (used in other functions).
+        ntpconfig          Configure ntp settings to use google ntp servers.
+        tcpbbr             Configures tcp to use bbr instead of cubic or re.no.
+        yumupdate          Updates servers using yum package manager.
+        aptupdate          Updates servers using apt package manager.
+        automatic          Figures out what you have and does all th.e things.
+        autoupdate         Updates this script to the newest version from github."
  else
      "$@"
  fi
