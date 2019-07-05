@@ -552,7 +552,7 @@ fail_output=
 verbose_mode=0
 
 
-echo -e "$yellow" "$check" "Updating mqqyself" "$reset"
+echo -e "$yellow" "$check" "Updating myself" "$reset"
 echo ""
 curl -j "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$updateserver_tmp"; check_download=$(echo $?);
     if [ "$check_download" -eq "1" ]; then
