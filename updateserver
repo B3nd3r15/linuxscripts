@@ -36,6 +36,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 1.0.7      B3nd3r      2019/07/05    updated no command verbage.
 #  VER 1.0.6      B3nd3r      2019/07/05    added help function.
 #  VER 1.0.5      B3nd3r      2019/07/05    fixed echo output verbage.
 #  VER 1.0.4      B3nd3r      2019/07/05    added logging to cleanup function and version #.
@@ -63,7 +64,7 @@
 #-----------------------------------------------
 # Script Version for updating.
 #-----------------------------------------------
-version=1.0.6
+version=1.0.7
 
 #-----------------------------------------------
 # Pulls the script name without directory paths.
@@ -151,10 +152,10 @@ help () {
         Default script location: /usr/bin
 
     Usage:
-        /usr/bin/$(basename "$0") [commands]
+        /usr/bin/$(basename "$0") [command]
 
         To run manually as root:
-        /usr/bin/updateserver [commands]
+        /usr/bin/updateserver [command]
 
     Commands:
         help               Show this menu.
@@ -659,8 +660,8 @@ cleanup () {
  if [ "$#" -eq  "0" ]
    then
      echo "No commands passed. Please give me a command.
-     
-     updateserver [commands]
+
+     updateserver [command]
 
     Commands:
         help               Show this menu.
