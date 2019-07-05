@@ -565,13 +565,13 @@ curl "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$updat
 
     # If we made it here, it means that we successfully downloaded all the scripts.
     mv "$updateserver_tmp" /usr/bin/updateserver; chmod +x /usr/bin/updateserver;
-    [[ ${verboseverbose_mode} -eq "1" ]] && echo "COMMANDLINE: ${commandline}"
-    if [ -z "$commandline" ]
-    then
-    exec env /bin/sh "$0" "-s" "-second_pass" "-fail_output" "$fail_output"
-    else
-    exec env /bin/sh "$0" "${commandline}" "-s" "-second_pass" "-fail_output" "$fail_output"
-    fi
+#    [[ ${verboseverbose_mode} -eq "1" ]] && echo "COMMANDLINE: ${commandline}"
+#    if [ -z "$commandline" ]
+#    then
+#    exec env /bin/sh "$0" "-s" "-second_pass" "-fail_output" "$fail_output"
+#    else
+#    exec env /bin/sh "$0" "${commandline}" "-s" "-second_pass" "-fail_output" "$fail_output"
+#    fi
     exit 0
 
 }
