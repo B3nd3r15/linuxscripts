@@ -570,7 +570,7 @@ curl -j "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$up
     fi
 
 # If we made it here, it means that we successfully downloaded all the scripts.
-    mv "$updateserver_tmp" /usr/bin/updateserver; chmod +x /usr/bin/updateserver; | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    mv "$updateserver_tmp" /usr/bin/updateserver; chmod +x /usr/bin/updateserver | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 #    [[ ${verboseverbose_mode} -eq "1" ]] && echo "COMMANDLINE: ${commandline}"
 #    if [ -z "$commandline" ]
 #    then
