@@ -22,6 +22,7 @@
 #################################################################################################################
 #
 #       Commands:
+#           help
 #           timestamp
 #           kernelversion
 #           ntpconfig
@@ -35,6 +36,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 1.0.6      B3nd3r      2019/07/05    added help function.
 #  VER 1.0.5      B3nd3r      2019/07/05    fixed echo output verbage.
 #  VER 1.0.4      B3nd3r      2019/07/05    added logging to cleanup function and version #.
 #  VER 1.0.3      B3nd3r      2019/07/05    updated log typo and version #.
@@ -61,7 +63,7 @@
 #-----------------------------------------------
 # Script Version for updating.
 #-----------------------------------------------
-version=1.0.5
+version=1.0.6
 
 #-----------------------------------------------
 # Pulls the script name without directory paths.
@@ -130,7 +132,7 @@ clear
 echo ""
 
 #---------------------------------
-# The items needed for validating downloads
+# The items needed for validating downloads.
 #---------------------------------
 branch_path=https://raw.githubusercontent.com/B3nd3r15/linuxscripts/master
 branch_path_master=https://raw.githubusercontent.com/B3nd3r15/linuxscripts/master
@@ -139,6 +141,35 @@ updateserver_tmp=/tmp/updateserver.$$
 failure_info=
 fail_output=
 verbose_mode=0
+
+#----------------------------------------------------------
+# help function that displays how to use this script.
+#----------------------------------------------------------
+help () {
+    cat <<EOF
+    Notes:
+        Default script location: /usr/bin
+
+    Usage:
+        /usr/bin/$(basename "$0") [commands]
+
+        To run manually as root:
+        /usr/bin/updateserver [commands]
+
+    Commands:
+        help               Show this menu.
+        timestamp          Shows a timestamp (used in other functions).
+        kernelversion      Show the current systems kernel version (used in other functions).
+        ntpconfig          Configure ntp settings to use google ntp servers.
+        tcpbbr             Configures tcp to use bbr instead of cubic or re.no.
+        yumupdate          Updates servers using yum package manager.
+        aptupdate          Updates servers using apt package manager.
+        automatic          Figures out what you have and does all th.e things.
+        autoupdate         Updates this script to the newest version from github.
+
+
+EOF
+}
 
 #---------------------------------
 # Timestamp function.
@@ -624,6 +655,13 @@ cleanup () {
 #[[ -e "$combined_uptime" ]] && rm "$combined_uptime"
 [[ -e "$updateserver_tmp" ]] && rm "$updateserver_tmp" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 }
+
+ if [ "$#" -eq  "0" ]
+   then
+     echo "No commands passed. Please give me a command."
+ else
+     "$@"
+ fi
 
 # The "$@" that follows this line is intentional and exists to allow you to call functions within the script from a command line.
 "$@"
