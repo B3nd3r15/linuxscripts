@@ -564,7 +564,7 @@ curl "$branch_path/updateserver" -o "$updateserver_tmp"; grep -q version "$updat
     fi
 
     # If we made it here, it means that we successfully downloaded all the scripts.
-    mv "$updateserver_tmp" /usr/bin/updateserver; chmod +x /usr/bin/updateserver;
+    cp -p "$updateserver_tmp" /usr/bin/updateserver; chmod +x /usr/bin/updateserver;
 #    [[ ${verboseverbose_mode} -eq "1" ]] && echo "COMMANDLINE: ${commandline}"
 #    if [ -z "$commandline" ]
 #    then
