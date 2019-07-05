@@ -664,4 +664,4 @@ cleanup () {
  fi
 
 # The "$@" that follows this line is intentional and exists to allow you to call functions within the script from a command line.
-"$@"
+#"$@"
