@@ -22,20 +22,24 @@
 #################################################################################################################
 #
 #       Commands:
-#           help
-#           timestamp
-#           kernelversion
-#           ntpconfig
-#           tcpbbr
-#           yumupdate
 #           aptupdate
 #           automatic
 #           autoupdate
+#           help
+#           kernelversion
+#           netdata
+#           netdatadependencies
+#           ntpconfig
+#           tcpbbr
+#           timestamp
+#           yumupdate
 #
 #################################################################################################################
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 1.0.8      B3nd3r      2019/07/10    added netdata and netdatadependencies function to install netdata onto server. 
+#                                           put commands in alphapetical order.
 #  VER 1.0.7      B3nd3r      2019/07/05    updated no command verbage.
 #  VER 1.0.6      B3nd3r      2019/07/05    added help function.
 #  VER 1.0.5      B3nd3r      2019/07/05    fixed echo output verbage.
@@ -64,7 +68,7 @@
 #-----------------------------------------------
 # Script Version for updating.
 #-----------------------------------------------
-version=1.0.7
+version=1.0.8
 
 #-----------------------------------------------
 # Pulls the script name without directory paths.
@@ -158,15 +162,18 @@ help () {
         /usr/bin/updateserver [command]
 
     Commands:
-        help               Show this menu.
-        timestamp          Shows a timestamp (used in other functions).
-        kernelversion      Show the current systems kernel version (used in other functions).
-        ntpconfig          Configure ntp settings to use google ntp servers.
-        tcpbbr             Configures tcp to use bbr instead of cubic or re.no.
-        yumupdate          Updates servers using yum package manager.
         aptupdate          Updates servers using apt package manager.
         automatic          Figures out what you have and does all th.e things.
+        autotools          Installs autotools, a requirement for netdata
         autoupdate         Updates this script to the newest version from github.
+        help               Show this menu.
+        kernelversion      Show the current systems kernel version (used in other functions).
+        netdata            Installs netdata live monitoring software.
+        netdatadependencies Installs the dependencies for netdata.
+        ntpconfig          Configure ntp settings to use google ntp servers.
+        tcpbbr             Configures tcp to use bbr instead of cubic or re.no.
+        timestamp          Shows a timestamp (used in other functions).
+        yumupdate          Updates servers using yum package manager.
 
 
 EOF
@@ -649,6 +656,86 @@ else
         echo "Cannot determine installed packaging system, Please manually update."
         exit 1;
 fi
+}
+
+netdata(){
+#--------------------------------------------------
+# Function to install netdata onto server.
+#--------------------------------------------------
+
+        echo ""
+        echo -e "$blue" "# Starting Netdata Install on $(timestamp) #" "$reset"
+        echo ""
+
+if (( $(ps -ef | grep -v grep | grep netdata | wc -l) > 0 ))
+    echo ""
+    echo -e "$green" "$check" "netdata is running!!!" "$reset" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    echo ""
+else
+    echo -e "$yellow" "Installing Netdata!" "$reset" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    echo ""
+#checking for dependencies first.
+    echo ""
+    echo -e "$yellow" "Checking for dependencies." "$reset" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    echo ""
+        if [[ -n $YUM_CMD ]]; then
+            if yum list installed | grep autoconf > /dev/null 2>&1; then
+                echo ""
+                echo -e "$green" "$check" "Dependencies already installed, continuing netdata setup!" "$reset"
+            else
+                netdatadependencies
+            fi
+        elif [[ -n $APT_GET_CMD ]]; then
+            if apt-get -qq autoconf; then
+                echo ""
+                echo -e "$green" "$check" "Dependencies already installed, continuing netdata setup!" "$reset"
+            else
+                netdatadependencies
+            fi
+    echo ""
+        fi
+#if (( $(ps -ef | grep -v grep | grep netdata | wc -l) > 0 )); then
+#one line install provided by https://docs.netdata.cloud/packaging/installer/#one-line-installation
+    echo "$yellow" "Dependencies installed, installing netdata" "$reset"
+    bash <(curl -Ss https://my-netdata.io/kickstart.sh) --stable-channel
+    echo ""
+    
+fi
+
+        echo ""
+        echo -e "$blue" "# Netdata Install Completed on $(timestamp) #" "$reset"
+        echo ""
+
+}
+
+netdatadependencies(){
+#--------------------------------------------------------
+# Function to install netdata dependencies onto server.
+#--------------------------------------------------------
+if [[ -n $YUM_CMD ]]; then
+        echo ""
+        echo -e "$yellow" "Installing netdata's dependencies." "$reset"
+        echo ""
+        yes | yum install autoconf automake curl gcc git libmnl-devel libuuid-devel openssl-devel libuv-devel lz4-devel Judy-devel make nc pkgconfig python zlib-devel | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+        echo ""
+        echo -e "$cyan" To view the log file: [ less $LOG_LOCATION/"${scriptname}".log ] "$reset"
+        echo ""
+
+elif [[ -n $APT_GET_CMD ]]; then
+        echo ""
+        echo -e "$yellow" "Installing netdata's dependencies." "$reset"
+        echo ""
+        yes | apt-get install zlib1g-dev uuid-dev libuv1-dev liblz4-dev libjudy-dev libssl-dev libmnl-dev gcc make git autoconf autoconf-archive autogen automake pkg-config curl | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+
+
+#-----------------------------------------------------------------------------------------------------
+# If neither Yum or Apt are installed, exit and have user manually install updates on their system.
+#-----------------------------------------------------------------------------------------------------
+else
+        echo "Cannot determine installed packaging system, Please check the following url:https://docs.netdata.cloud/packaging/installer/#prepare-your-system"
+        exit 1;
+fi
+
 }
 
 # Anything that needs to be removed at the end of the program needs to be here
