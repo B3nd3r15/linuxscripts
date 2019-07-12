@@ -38,6 +38,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 1.1.0      B3nd3r      2019/07/12    added command to set terminal size.
 #  VER 1.0.9      B3nd3r      2019/07/12    added host ip infor for netdata function.
 #  VER 1.0.8      B3nd3r      2019/07/10    added netdata and netdatadependencies function to install netdata onto server. 
 #                                           put commands in alphapetical order.
@@ -69,7 +70,12 @@
 #-----------------------------------------------
 # Script Version for updating.
 #-----------------------------------------------
-version=1.0.9
+version=1.1.0
+
+#-----------------------------------------------
+# Set size of terminal window for output.
+#-----------------------------------------------
+stty cols 95 rows 35
 
 #-----------------------------------------------
 # Pulls the script name without directory paths.
