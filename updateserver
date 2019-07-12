@@ -715,7 +715,7 @@ netdatadependencies(){
 #--------------------------------------------------------
 if [[ -n $YUM_CMD ]]; then
         echo ""
-        echo -e "$yellow" "Installing netdata's dependencies." "$reset"
+        echo -e "$yellow" "$check" "Installing netdata's dependencies." "$reset"
         echo ""
         yes | yum install autoconf automake curl gcc git libmnl-devel libuuid-devel openssl-devel libuv-devel lz4-devel Judy-devel make nc pkgconfig python zlib-devel | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
         echo ""
@@ -724,7 +724,7 @@ if [[ -n $YUM_CMD ]]; then
 
 elif [[ -n $APT_GET_CMD ]]; then
         echo ""
-        echo -e "$yellow" "Installing netdata's dependencies." "$reset"
+        echo -e "$yellow" "$check" "Installing netdata's dependencies." "$reset"
         echo ""
         yes | apt-get install zlib1g-dev uuid-dev libuv1-dev liblz4-dev libjudy-dev libssl-dev libmnl-dev gcc make git autoconf autoconf-archive autogen automake pkg-config curl | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
 
