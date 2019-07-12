@@ -697,7 +697,8 @@ else
         fi
 #if (( $(ps -ef | grep -v grep | grep netdata | wc -l) > 0 )); then
 #one line install provided by https://docs.netdata.cloud/packaging/installer/#one-line-installation
-    echo "$yellow" "Dependencies installed, installing netdata" "$reset"
+    echo -e "$yellow" "$check" "Dependencies installed, installing netdata" "$reset"
+    echo ""
     bash <(curl -Ss https://my-netdata.io/kickstart.sh) --stable-channel
     echo ""
     
@@ -733,7 +734,7 @@ elif [[ -n $APT_GET_CMD ]]; then
 # If neither Yum or Apt are installed, exit and have user manually install updates on their system.
 #-----------------------------------------------------------------------------------------------------
 else
-        echo "Cannot determine installed packaging system, Please check the following url:https://docs.netdata.cloud/packaging/installer/#prepare-your-system"
+        echo "Cannot determine installed packaging system, Please check the following url: https://docs.netdata.cloud/packaging/installer/#prepare-your-system"
         exit 1;
 fi
 
