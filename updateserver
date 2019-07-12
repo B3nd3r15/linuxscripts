@@ -662,21 +662,22 @@ netdata(){
 #--------------------------------------------------
 # Function to install netdata onto server.
 #--------------------------------------------------
+netdata=netdata
 
         echo ""
         echo -e "$blue" "# Starting Netdata Install on $(timestamp) #" "$reset"
         echo ""
 
-if (( $(ps -ef | grep -v grep | grep netdata | wc -l) > 0 ))
+if (( $(ps -ef | grep -v grep | grep $netdata | wc -l) > 0 )); then
     echo ""
-    echo -e "$green" "$check" "netdata is running!!!" "$reset" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    echo -e "$green" "$check" "netdata is running! You can monitor this server at http://<hostip>:19999" "$reset"
     echo ""
 else
-    echo -e "$yellow" "Installing Netdata!" "$reset" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    echo -e "$yellow" "Installing Netdata!" "$reset"
     echo ""
 #checking for dependencies first.
     echo ""
-    echo -e "$yellow" "Checking for dependencies." "$reset" | sudo tee -a $LOG_LOCATION/"${scriptname}".log >> /dev/null 2>&1
+    echo -e "$yellow" "Checking for dependencies." "$reset"
     echo ""
         if [[ -n $YUM_CMD ]]; then
             if yum list installed | grep autoconf > /dev/null 2>&1; then
@@ -751,15 +752,17 @@ cleanup () {
      updateserver [command]
 
     Commands:
-        help               Show this menu.
-        timestamp          Shows a timestamp (used in other functions).
-        kernelversion      Show the current systems kernel version (used in other functions).
-        ntpconfig          Configure ntp settings to use google ntp servers.
-        tcpbbr             Configures tcp to use bbr instead of cubic or re.no.
-        yumupdate          Updates servers using yum package manager.
         aptupdate          Updates servers using apt package manager.
         automatic          Figures out what you have and does all th.e things.
-        autoupdate         Updates this script to the newest version from github."
+        autoupdate         Updates this script to the newest version from github.
+        help               Show this menu.
+        kernelversion      Show the current systems kernel version (used in other functions).
+        netdata            Installs netdata live monitoring.
+        netdatadependencies Installs the dependencies for nedtata.
+        ntpconfig          Configure ntp settings to use google ntp servers.
+        tcpbbr             Configures tcp to use bbr instead of cubic or re.no.
+        timestamp          Shows a timestamp (used in other functions).
+        yumupdate          Updates servers using yum package manager."
  else
      "$@"
  fi
