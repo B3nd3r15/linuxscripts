@@ -38,6 +38,7 @@
 #
 #    Version      AUTHOR      DATE          COMMENTS
 #                 ------      ----          --------
+#  VER 1.0.9      B3nd3r      2019/07/12    added host ip infor for netdata function.
 #  VER 1.0.8      B3nd3r      2019/07/10    added netdata and netdatadependencies function to install netdata onto server. 
 #                                           put commands in alphapetical order.
 #  VER 1.0.7      B3nd3r      2019/07/05    updated no command verbage.
@@ -68,7 +69,7 @@
 #-----------------------------------------------
 # Script Version for updating.
 #-----------------------------------------------
-version=1.0.8
+version=1.0.9
 
 #-----------------------------------------------
 # Pulls the script name without directory paths.
@@ -662,15 +663,15 @@ netdata(){
 #--------------------------------------------------
 # Function to install netdata onto server.
 #--------------------------------------------------
-netdata=netdata
+hostip=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[1]}')
 
         echo ""
         echo -e "$blue" "# Starting Netdata Install on $(timestamp) #" "$reset"
         echo ""
 
-if (( $(ps -ef | grep -v grep | grep $netdata | wc -l) > 0 )); then
+if (( $(pgrep netdata | wc -l) > 0 )); then
     echo ""
-    echo -e "$green" "$check" "netdata is running! You can monitor this server at http://<hostip>:19999" "$reset"
+    echo -e "$green" "$check" "netdata is running! You can monitor this server at http://${hostip}:19999" "$reset"
     echo ""
 else
     echo -e "$yellow" "Installing Netdata!" "$reset"
